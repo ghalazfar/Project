@@ -56,7 +56,7 @@ class Header extends Component {
 
     renderNavbar() {
         return(
-            <div className="container-fluid">
+            <div className="container-fluid" style={{marginLeft: "-15px", marginRight: "-15px" }}>
                 <Navbar collapseOnSelect>
                     <div style={{marginTop: "15px", marginBottom: "15px" }}>
                         <Navbar.Header>
@@ -75,13 +75,17 @@ class Header extends Component {
                                 </InputGroup>
                             </FormGroup>
                         </div>
-                        <div className="col-lg-3 col-lg-push-2 col-md-4 col-md-push-1 col-sm-5 col-xs-12 col-offset-xs-3">
-                            {this.AccountBar()}
-                            <Button className="btn btn-success">
-                                <span class="badge">24</span>  CART                  
-                            </Button>                                
+                        <div style={{marginRight: "75px"}}>
+                            <Nav pullRight className="col-lg-1 col-lg-push-0 col-md-push-1 col-sm-2 col-sm-push-0 col-xs-6 col-xs-push-2">
+                                <Button className="btn btn-success">
+                                    <span class="badge">24</span>  CART                  
+                                </Button>                                
+                            </Nav>
+                            <Nav pullRight className="col-lg-1 col-lg-push-0 col-md-push-1 col-sm-2 col-sm-push-0 col-xs-6 col-xs-push-4">
+                                {this.AccountBar()}
+                            </Nav>                                
                         </div>                        
-                        <div className="col-lg-7 col-lg-push-3 col-md-8 col-md-push-3">
+                        <div className="col-lg-7 col-lg-push-3 col-md-8 col-md-push-3 col-xs-12">
                             <Navbar.Collapse>
                                 <Nav>
                                     <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
