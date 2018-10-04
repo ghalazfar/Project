@@ -1,4 +1,4 @@
-const INITIAL_STATE = { username: "", email: "", error: "", cookieCheck: false }
+const INITIAL_STATE = { username: "", email: "", error: "", cookiesChecked: false }
 
 export default (state = INITIAL_STATE, action) => {
     switch(action.type) {
@@ -7,9 +7,9 @@ export default (state = INITIAL_STATE, action) => {
         case "USER_LOGIN_FAIL" :
             return {...state, error: "Wrong Email or Password"};
         case "USER_LOGOUT":
-            return { ...INITIAL_STATE, cookieCheck: true}
+            return { ...INITIAL_STATE, cookiesChecked: true}
         case "COOKIES_CHECKED":
-            return {...state, cookieCheck: true};
+            return {...state, cookiesChecked: true};
         default :
             return state
     }

@@ -1,31 +1,21 @@
-// membuat actioncreator
-// menghasilkan action berupa objek
-// masuk ke semua reducer
-
-// export const onLoginSuccess = (user) => {
-//     return {
-//         type: "USER_LOGIN_SUCCESS",
-//         payload: user
-//     }
-// }
 import axios from 'axios'
 import { API_URL_1 } from '../supports/api-url/apiurl'
 
 export const onLogin = (user) => {
     return(dispatch) => {
         axios.get(API_URL_1 + '/users', {
-            params: { // langsung ke property username dan password
+            params: {
                 email: user.email,
                 password: user.password
             }
         }).then(user => {
-            dispatch({ // dispatch fungsi menggantikan return, bisa lebih dari sekali
+            dispatch({
                 type: "USER_LOGIN_SUCCESS",
                 payload: { 
-                    username: user.data[0].username, //didestructure, cuma perlu object username dan email aja, password ga perlu
+                    username: user.data[0].username,
                     email: user.data[0].email,
                     error: "",
-                    cookieCheck: true
+                    cookiesChecked: true
                 }
             })      
         }).catch(err => {
@@ -37,7 +27,6 @@ export const onLogin = (user) => {
     }
 }
 
-//untuk cookies
 export const keepLogin = (email) => {
     return(dispatch) => {
         axios.get(API_URL_1 + '/users', {
@@ -51,7 +40,7 @@ export const keepLogin = (email) => {
                     username: user.data[0].username,
                     email: user.data[0].email,
                     error: "",
-                    cookieCheck: true
+                    cookiesChecked: true
                 }
             })      
         }).catch(err => {
@@ -78,11 +67,6 @@ export const cookiesChecked = () => {
 export const onRegister = (user) => {
     return (dispatch) => {
         axios.post(API_URL_1 + '/users', user
-        // isi user adalah: {
-        //     username: user.username,
-        //     email: user.email,
-        //     password: user.password
-        // }
         ).then((res) => {
             console.log(res)
             dispatch({

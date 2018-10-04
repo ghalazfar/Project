@@ -1,28 +1,49 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom'
+import Cookies from 'universal-cookie'
 import './App.css';
-import Header from './components/Header';
-import HomePage from './components/HomePage';
-import LoginPage from './components/LoginPage';
-import RegisterPage from './components/RegisterPage';
-import ProductList from './components/ProductList';
-import Footer from './components/Footer';
+import AppInit from './components/AppInit';
+import { keepLogin, cookiesChecked } from './actions'
+import loadinggif from './supports/img/loading.gif';
 
+const cookies = new Cookies()
 
 class App extends Component {
+  componentWillMount() {
+    const loginCookies = cookies.get('loginCookies')
+    console.log(loginCookies)
+    if(loginCookies !== undefined) {
+        this.props.keepLogin(loginCookies)
+    }
+    else {
+        this.props.cookiesChecked()
+    }
+  }
+
+  componentWillReceiveProps(newProps) { 
+    if(newProps.authGlobal.username === ""){
+        cookies.remove('loginCookies')
+    }
+  }
+
   render() {
+    if (this.props.authGlobal.cookiesChecked){
+      return (
+        <AppInit className="App"/>
+      );
+    }
     return (
-        <div className="App" style={{ overflowX: "hidden" }}>
-          <Header/>
-          <Route exact path="/" component={HomePage}/>
-          <Route path="/login" component={LoginPage}/>
-          <Route path="/register" component={RegisterPage}/>
-          <Route path="/productlist" component={ProductList}/>
-          <Footer/>
-        </div>
-    );
+      <div className="App" style={{ display: "table", position: "absolute", width: "100%", height: "100%", left: "0", top: "0", backgroundColor: "white", overflowX: "hidden" }}>
+        <div style={{ display: "table-cell", verticalAlign: "middle" }}>
+          <img className="center" style={{ width: "150px" }} src={loadinggif}/>
+        </div>        
+      </div>
+    )
   }
 }
-
-export default App;
+const mapStateToProps = (state) => {
+  return { authGlobal: state.auth }
+}
+export default withRouter(connect(mapStateToProps, { keepLogin, cookiesChecked })(App));
 
