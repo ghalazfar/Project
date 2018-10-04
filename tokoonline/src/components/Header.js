@@ -14,12 +14,16 @@ import {
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Cookies from 'universal-cookie';
-import { onLogout, keepLogin } from '../actions';
+import { onLogout, keepLogin, categorySelect } from '../actions';
 import logo from '../supports/img/logo.png';
 
 const cookies = new Cookies()
 
 class Header extends Component {
+    state = {
+        selectedCategory: ""
+    }
+
     componentWillMount() { 
         const cookiesNya = cookies.get('myCat')
         if(cookiesNya !== undefined) {
@@ -40,32 +44,38 @@ class Header extends Component {
     AccountBar = () => {
         if(this.props.authGlobal.email != "") {
             return (
-                <SplitButton title="MY ACCOUNT">
-                    <MenuItem eventKey={1.1}>Personal data</MenuItem>
-                    <MenuItem eventKey={1.2}>Payment Setting</MenuItem>
-                    <MenuItem eventKey={1.3}>My orders</MenuItem>
-                    <MenuItem divider />
-                    <MenuItem eventKey={1.4} onSelect={this.onLogOutClick}>Logout</MenuItem>
-                </SplitButton>
+                <Navbar.Text style={{marginTop: "21px"}}>
+                    <Link to='/myaccount'style={{ fontSize: "small" }} >MY ACCOUNT</Link>
+                    <Navbar.Link href='/logout' onClick={this.onLogOutClick} style={{ fontSize: "small", marginLeft: "20px" }} >Logout</Navbar.Link>
+                    <Button className="btn btn-success" style={{ marginLeft: "20px"}}>
+                        <span class="badge">24</span>  <span style={{ fontWeight: "bold", fontSize: "small" }}>CART</span>                  
+                    </Button>  
+                </Navbar.Text>
             )
         }
         return (
-            <Link to="/login"><Button>Login</Button></Link>
+            <Navbar.Text >
+                <Navbar.Link style={{ fontSize: "small", marginLeft: "115px"}} href='/login'><Link to="/login">Login</Link></Navbar.Link>
+                <Button className="btn btn-success" style={{ marginLeft: "20px"}}>
+                    <span class="badge">0</span>  <span style={{ fontWeight: "bold", fontSize: "small"}}>CART</span>                  
+                </Button>
+            </Navbar.Text>
         )
     }
 
     renderNavbar() {
         return(
-            <div className="container-fluid" style={{marginLeft: "-15px", marginRight: "-15px" }}>
+            <div fluid={true} staticTop={true}>
                 <Navbar collapseOnSelect>
-                    <div style={{marginTop: "15px", marginBottom: "15px" }}>
-                        <Navbar.Header>
-                        <div className="col-sm-12 col-xs-8">              
+                    <div >
+                        <Navbar.Header style={{ marginTop: "8px" }}>
+                        <Link to="/"><div className="col-sm-12 col-xs-8">              
                             <img className="img-responsive" alt="" src={logo}/>
                         </div>
-                            <Navbar.Toggle style={{ position: "relative", bottom: "10px"}} />
+                        </Link>
+                            <Navbar.Toggle style={{ bottom: "8px"}} />                            
                         </Navbar.Header>
-                        <div className="col-lg-5 col-lg-push-2 col-md-5 col-md-push-1 col-sm-8 col-xs-12">
+                        <div style={{ marginTop: "8px" }} className="col-lg-6 col-lg-push-1 col-md-5 col-md-push-1 col-sm-8 col-xs-12">
                             <FormGroup>
                                 <InputGroup>
                                 <FormControl type="text" placeholder="Search items..." />
@@ -75,35 +85,31 @@ class Header extends Component {
                                 </InputGroup>
                             </FormGroup>
                         </div>
-                        <div style={{marginRight: "75px"}}>
-                            <Nav pullRight className="col-lg-1 col-lg-push-0 col-md-push-1 col-sm-2 col-sm-push-0 col-xs-6 col-xs-push-2">
-                                <Button className="btn btn-success">
-                                    <span class="badge">24</span>  CART                  
-                                </Button>                                
-                            </Nav>
-                            <Nav pullRight className="col-lg-1 col-lg-push-0 col-md-push-1 col-sm-2 col-sm-push-0 col-xs-6 col-xs-push-4">
-                                {this.AccountBar()}
+                        <div className="container" >
+                            <Nav pullRight style={{marginTop: "-13px"}} className="col-lg-4 col-lg-push-1 col-md-4 col-md-push-1 col-sm-8 col-xs-12">
+                                {this.AccountBar()}                                
                             </Nav>                                
                         </div>                        
                         <div className="col-lg-7 col-lg-push-3 col-md-8 col-md-push-3 col-xs-12">
                             <Navbar.Collapse>
                                 <Nav>
-                                    <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
+                                    <NavDropdown title="Men">
+                                        <MenuItem><Link to="/">Outerwear</Link></MenuItem>
+                                        <MenuItem>Tops</MenuItem>
+                                        <MenuItem>Bottom</MenuItem>
+                                        <MenuItem>Shoes</MenuItem>
+                                    </NavDropdown>
+                                    <NavDropdown eventKey={3} title="Women" id="basic-nav-dropdown">
                                         <MenuItem eventKey={3.1}>Action</MenuItem>
                                         <MenuItem eventKey={3.2}>Another action</MenuItem>
                                         <MenuItem eventKey={3.3}>Something else here</MenuItem>
                                     </NavDropdown>
-                                    <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
+                                    <NavDropdown eventKey={3} title="Accessories" id="basic-nav-dropdown">
                                         <MenuItem eventKey={3.1}>Action</MenuItem>
                                         <MenuItem eventKey={3.2}>Another action</MenuItem>
                                         <MenuItem eventKey={3.3}>Something else here</MenuItem>
                                     </NavDropdown>
-                                    <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
-                                        <MenuItem eventKey={3.1}>Action</MenuItem>
-                                        <MenuItem eventKey={3.2}>Another action</MenuItem>
-                                        <MenuItem eventKey={3.3}>Something else here</MenuItem>
-                                    </NavDropdown>
-                                    <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
+                                    <NavDropdown eventKey={3} title="Placeholder" id="basic-nav-dropdown">
                                         <MenuItem eventKey={3.1}>Action</MenuItem>
                                         <MenuItem eventKey={3.2}>Another action</MenuItem>
                                         <MenuItem eventKey={3.3}>Something else here</MenuItem>
@@ -127,7 +133,6 @@ class Header extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const auth = state.auth;
-  return { authGlobal: auth };
+  return { authGlobal: state.auth, selectedCategory: state.selectedCategory };
 }
-export default connect(mapStateToProps, { onLogout, keepLogin })(Header);
+export default connect(mapStateToProps, { onLogout, keepLogin, categorySelect })(Header);

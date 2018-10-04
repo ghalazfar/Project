@@ -8,7 +8,7 @@ import reducers from './reducers';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import './supports/css/bootstrap.css';
+import './supports/css/bootstrap.min.css';
 
 const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
 

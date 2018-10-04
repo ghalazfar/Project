@@ -97,3 +97,12 @@ export const onRegister = (user) => {
         })
      }
 }
+
+export const categorySelect = (category) => {
+    return {
+        type: "CATEGORY_SELECT",
+        payload: {
+            selectedCategory: category
+        }
+    }
+}

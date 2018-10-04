@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { onLogin } from '../actions' //import actioncreator
 import { Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import '../supports/css/login.css';
+// import '../supports/css/login.css';
 
 const cookies = new Cookies()
 

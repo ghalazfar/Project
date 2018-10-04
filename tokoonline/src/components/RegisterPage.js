@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { onRegister } from '../actions'
-import '../supports/css/login.css';
+// import '../supports/css/login.css';
 
 class RegisterPage extends Component {
     // state = { users: [] }
