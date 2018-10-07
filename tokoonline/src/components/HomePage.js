@@ -21,7 +21,7 @@ class HomePage extends Component {
                 </Carousel.Item>
             </Carousel>
             <div>
-                <h1 style={{ textAlign: "center" }}>T-SHIRT COLLECTION</h1>
+                <h1 style={{ textAlign: "center", fontWeight: "bold" }}>T-SHIRT COLLECTION</h1>
                 <div className="col-sm-push-2 col-sm-10 col-xs-12">
                     <div className="col-lg-2 col-xs-12">
                         <Panel style={{ marginLeft: "-15px", marginRight: "-16px", marginBottom: "-1px" }}>

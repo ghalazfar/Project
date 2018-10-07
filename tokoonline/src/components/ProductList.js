@@ -7,51 +7,50 @@ import {
  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import Cookies from 'universal-cookie';
-import { onLogout, keepLogin } from '../actions';
-import logo from '../supports/img/logo.png';
 
-const cookies = new Cookies()
-
-class Header extends Component {    
+class ProductList extends Component {    
     render() {
+        console.log(this.props.selectedCategory[0])
         return(
             <div className="container-fluid">
                 <div className="col-sm-3 col-xs-12">
-                    <PanelGroup accordion id="accordion-example">
-                        <Panel eventKey="1">
+                    <PanelGroup accordion activeKey={this.props.selectedCategory[0]}>
+                        <Panel eventKey={1}>
                             <Panel.Heading>
-                            <Panel.Title toggle>Collapsible Group Item #1</Panel.Title>
+                            <Panel.Title toggle>Men</Panel.Title>
                             </Panel.Heading>
                             <Panel.Body collapsible>
                             <ListGroup style={{ margin: "-16px" }}>
-                                <ListGroupItem>Item 1</ListGroupItem>
-                                <ListGroupItem>Item 2</ListGroupItem>
-                                <ListGroupItem>&hellip;</ListGroupItem>
+                                <ListGroupItem>Outerwear</ListGroupItem>
+                                <ListGroupItem>Tops</ListGroupItem>
+                                <ListGroupItem>Bottoms</ListGroupItem>
+                                <ListGroupItem>Shoes</ListGroupItem>
                             </ListGroup>
                             </Panel.Body>
                         </Panel>
-                        <Panel eventKey="2">
+                        <Panel eventKey={2}>
                             <Panel.Heading>
-                            <Panel.Title toggle>Collapsible Group Item #2</Panel.Title>
+                            <Panel.Title toggle>Women</Panel.Title>
                             </Panel.Heading>
                             <Panel.Body collapsible>
                             <ListGroup style={{ margin: "-16px" }}>
-                                <ListGroupItem>Item 1</ListGroupItem>
-                                <ListGroupItem>Item 2</ListGroupItem>
-                                <ListGroupItem>&hellip;</ListGroupItem>
+                                <ListGroupItem>Outerwear</ListGroupItem>
+                                <ListGroupItem>Tops</ListGroupItem>
+                                <ListGroupItem>Bottoms</ListGroupItem>
+                                <ListGroupItem>Shoes</ListGroupItem>
                             </ListGroup>
                             </Panel.Body>
                         </Panel>
-                        <Panel eventKey="3">
+                        <Panel eventKey={3}>
                             <Panel.Heading>
-                            <Panel.Title toggle>Collapsible Group Item #3</Panel.Title>
+                            <Panel.Title toggle>Accessories</Panel.Title>
                             </Panel.Heading>
                             <Panel.Body collapsible>
                             <ListGroup style={{ margin: "-16px" }}>
-                                <ListGroupItem>Item 1</ListGroupItem>
-                                <ListGroupItem>Item 2</ListGroupItem>
-                                <ListGroupItem>&hellip;</ListGroupItem>
+                                <ListGroupItem>Rings</ListGroupItem>
+                                <ListGroupItem>Necklaces</ListGroupItem>
+                                <ListGroupItem>Hats</ListGroupItem>
+                                <ListGroupItem>Bags</ListGroupItem>
                             </ListGroup>
                             </Panel.Body>
                         </Panel>
@@ -62,8 +61,8 @@ class Header extends Component {
     }    
 }
 
-const mapStateToProps = (state) => {
-  const auth = state.auth;
-  return { authGlobal: auth };
+const mapStateToProps = (props) => {
+    const { selectedCategory } = props
+    return { selectedCategory: selectedCategory.selectedCategory };
 }
-export default connect(mapStateToProps, { onLogout, keepLogin })(Header);
+export default connect(mapStateToProps)(ProductList);

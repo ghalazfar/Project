@@ -19,7 +19,7 @@ import logo from '../supports/img/logo.png';
 
 const cookies = new Cookies()
 
-class Header extends Component {
+class Footer extends Component {
     render() {
         return(
             <div className="container-fluid" style={{marginLeft: "-15px", marginRight: "-15px", marginBottom:"75px"}}>
@@ -60,4 +60,4 @@ const mapStateToProps = (state) => {
   const auth = state.auth;
   return { authGlobal: auth };
 }
-export default connect(mapStateToProps, { onLogout, keepLogin })(Header);
+export default connect(mapStateToProps, { onLogout, keepLogin })(Footer);

@@ -76,6 +76,9 @@ export const onRegister = (user) => {
                     email: res.data.email
                 }
             })
+            dispatch({
+                type: "COOKIES_CHECKED"
+            })
         }).catch((err) => {
             console.log(err)
         })

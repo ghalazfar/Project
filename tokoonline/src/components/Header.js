@@ -9,30 +9,32 @@ import {
     FormControl, 
     Button, 
     InputGroup,
-    Modal,
-    ControlLabel
+    Modal
  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { onLogin, onLogout, keepLogin, categorySelect, cookiesChecked } from '../actions';
+import Cookies from 'universal-cookie';
+import { 
+    onLogin, 
+    onLogout,
+    onRegister,
+    categorySelect, 
+    cookiesChecked
+ } from '../actions';
 import logo from '../supports/img/logo.png';
+
+const cookies = new Cookies()
 
 class Header extends Component {
     state = {
-        selectedCategory: "",
-        showLogin: false
+        showLogin: false,
+        showRegister: false
     }
     
     componentWillReceiveProps(newProps) { 
         if(newProps.authGlobal.email !== ""){
-            this.setState({ showLogin: false })
+            cookies.set('loginCookies', newProps.authGlobal.email, { path: '/'})
         }
-    }
-
-    onLoginClick = () => {
-        var email= this.refs.email.value
-        var password= this.refs.password.value
-        this.props.onLogin({ email, password })
     }
 
     closeLogin = () => {
@@ -43,10 +45,32 @@ class Header extends Component {
         this.setState({ showLogin: true })
     }
 
+    closeRegister = () => {
+        this.setState({ showRegister: false })
+    }
+
+    openRegister = () => {
+        this.setState({ showLogin: false, showRegister: true })
+    }
+
+    onRegisterBackLink = () => {
+        this.setState({ showLogin: true, showRegister: false })
+    }
+
     onLoginClick = () => {
-        var email= this.refs.email.value
-        var password= this.refs.password.value
+        var email= this.refs.emailLogin.value
+        var password= this.refs.passwordLogin.value
         this.props.onLogin({ email, password })
+        this.setState({ showLogin: false })
+    }
+
+    onRegisterClick = () => {
+        this.props.onRegister({
+            username: this.refs.usernameRegister.value,
+            email: this.refs.emailRegister.value,
+            password: this.refs.passwordRegister.value,
+        })
+        this.setState({ showRegister: false })
     }
 
     onLogOutClick = () => {
@@ -69,7 +93,7 @@ class Header extends Component {
             <Navbar.Text >
                 <Navbar.Link href='#' onClick={this.openLogin} style={{ fontSize: "small", marginLeft: "113px"}}>Login</Navbar.Link>
                 <Button className="btn btn-success" style={{ marginLeft: "30px", padding: "0px", paddingRight: "40px"}}>
-                    <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px"}}>0</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
+                    <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px" }}>0</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
                 </Button>
             </Navbar.Text>
         )
@@ -84,11 +108,11 @@ class Header extends Component {
                     <form>
                     <div class="form-group">
                         <label for="email">Email address:</label>
-                        <input type="email" class="form-control" ref="email"/>
+                        <input type="email" class="form-control" ref="emailLogin"/>
                     </div>
                     <div class="form-group">
                         <label for="pwd">Password:</label>
-                        <input type="password" class="form-control" ref="password"/>
+                        <input type="password" class="form-control" ref="passwordLogin"/>
                     </div>
                         <div>
                         <input type="button" className="btn btn-primary" style={{ fontWeight: "bold", paddingLeft: "30px", paddingRight: "30px" }} value="LOG IN" onClick={this.onLoginClick}/>
@@ -97,7 +121,43 @@ class Header extends Component {
                         <div>
                         <input type="checkbox" style={{ marginTop: "15px", marginBottom: "15px" }}/> Remember me
                         </div>
-                        <input type="button" className="btn btn-primary btn-block" style={{ fontWeight: "bold" }} value="CREATE AN ACCOUNT" />
+                        <input type="button" className="btn btn-primary btn-block" style={{ fontWeight: "bold" }} value="CREATE AN ACCOUNT" onClick={this.openRegister}/>
+                    </form>
+                </Modal.Body>
+            </Modal>
+        )
+    }
+
+    renderRegister = () => {
+        return(
+            <Modal show={this.state.showRegister} onHide={this.closeRegister}>
+                <Modal.Body>
+                    <img className="img-responsive" style={{ margin: "auto"}} alt="" src={logo}/>
+                    <h3>Create an Account</h3>
+                    <form>
+                    <div class="form-group">
+                        <label>Email address:</label>
+                        <input type="email" class="form-control" ref="emailRegister"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" class="form-control" ref="passwordRegister"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm your password:</label>
+                        <input type="password" class="form-control" ref="passwordconfirmation"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input type="text" class="form-control" ref="usernameRegister"/>
+                    </div>
+                    <div>
+                        <input type="checkbox" style={{ marginBottom: "15px" }}/> I accept the Terms of Use and I agree with the Privacy Policy.
+                    </div>
+                    <div>
+                        <input type="button" className="btn btn-primary" style={{ fontWeight: "bold", paddingLeft: "30px", paddingRight: "30px" }} value="CREATE ACCOUNT" onClick={this.onRegisterClick}/>
+                        <a href='#' className="pull-right" style={{ fontSize: "x-small", fontWeight: "bold", textAlign: "right", marginTop: "15px" }} onClick={this.onRegisterBackLink}>BACK</a>
+                    </div>
                     </form>
                 </Modal.Body>
             </Modal>
@@ -135,27 +195,27 @@ class Header extends Component {
                             <Navbar.Collapse>
                                 <Nav>
                                     <NavDropdown title="Men">
-                                        <MenuItem><Link to="/">Outerwear</Link></MenuItem>
-                                        <MenuItem>Tops</MenuItem>
-                                        <MenuItem>Bottom</MenuItem>
-                                        <MenuItem>Shoes</MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([1,1])}>Outerwear</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([1,2])}>Tops</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([1,3])}>Bottoms</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([1,4])}>Shoes</Link></MenuItem>
                                     </NavDropdown>
-                                    <NavDropdown eventKey={3} title="Women" id="basic-nav-dropdown">
-                                        <MenuItem eventKey={3.1}>Action</MenuItem>
-                                        <MenuItem eventKey={3.2}>Another action</MenuItem>
-                                        <MenuItem eventKey={3.3}>Something else here</MenuItem>
+                                    <NavDropdown title="Women">
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([2,1])}>Outerwear</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([2,2])}>Tops</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([2,3])}>Bottoms</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([2,4])}>Shoes</Link></MenuItem>
                                     </NavDropdown>
-                                    <NavDropdown eventKey={3} title="Accessories" id="basic-nav-dropdown">
-                                        <MenuItem eventKey={3.1}>Action</MenuItem>
-                                        <MenuItem eventKey={3.2}>Another action</MenuItem>
-                                        <MenuItem eventKey={3.3}>Something else here</MenuItem>
+                                    <NavDropdown title="Accessories">
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([3,1])}>Rings</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([3,2])}>Necklaces</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([3,3])}>Hats</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([3,4])}>Bags</Link></MenuItem>
                                     </NavDropdown>
-                                    <NavDropdown eventKey={3} title="Placeholder" id="basic-nav-dropdown">
-                                        <MenuItem eventKey={3.1}>Action</MenuItem>
-                                        <MenuItem eventKey={3.2}>Another action</MenuItem>
-                                        <MenuItem eventKey={3.3}>Something else here</MenuItem>
-                                    </NavDropdown>
-                                    <NavItem eventKey={1}>
+                                    <NavItem>
+                                        <Link to="">Placeholder</Link>
+                                    </NavItem>
+                                    <NavItem>
                                         <Link to="">Special Offers</Link>
                                     </NavItem>
                                 </Nav>
@@ -164,6 +224,7 @@ class Header extends Component {
                     </div>
                 </Navbar>
                 {this.renderLogin()}
+                {this.renderRegister()}
             </div>  
         )
     }
@@ -175,6 +236,6 @@ class Header extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { authGlobal: state.auth, selectedCategory: state.selectedCategory };
+  return { authGlobal: state.auth };
 }
-export default connect(mapStateToProps, { onLogin, onLogout, keepLogin, categorySelect, cookiesChecked })(Header);
+export default connect(mapStateToProps, { onLogin, onLogout, onRegister, categorySelect, cookiesChecked })(Header);
