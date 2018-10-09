@@ -3,14 +3,15 @@ import {
     Panel,
     PanelGroup,
     ListGroup,
-    ListGroupItem
+    ListGroupItem,
+    Thumbnail
  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import tshirt from '../supports/img/tshirt.jpg';
 
 class ProductList extends Component {    
     render() {
-        console.log(this.props.selectedCategory[0])
         return(
             <div className="container-fluid">
                 <div className="col-sm-3 col-xs-12">
@@ -55,6 +56,38 @@ class ProductList extends Component {
                             </Panel.Body>
                         </Panel>
                     </PanelGroup>
+                </div>
+                <div className="col-sm-9 col-xs-12">
+                    <div className="col-sm-3 col-xs-10">
+                        <Thumbnail href='#' src={tshirt} alt="">
+                            <p style={{ textAlign: "center" }}>PRODUCT NAME</p>
+                            <p style={{fontWeight: "bold", textAlign: "center" }}><mark >20.000 IDR</mark></p>
+                        </Thumbnail>
+                    </div>
+                    <div className="col-sm-3 col-xs-10">
+                        <Thumbnail href='#' src={tshirt} alt="">
+                            <p style={{ textAlign: "center" }}>PRODUCT NAME</p>
+                            <p style={{fontWeight: "bold", textAlign: "center" }}><mark >20.000 IDR</mark></p>
+                        </Thumbnail>
+                    </div>   
+                    <div className="col-sm-3 col-xs-10">
+                        <Thumbnail href='#' src={tshirt} alt="">
+                            <p style={{ textAlign: "center" }}>PRODUCT NAME</p>
+                            <p style={{fontWeight: "bold", textAlign: "center" }}><mark >20.000 IDR</mark></p>
+                        </Thumbnail>
+                    </div>   
+                    <div className="col-sm-3 col-xs-10">
+                        <Thumbnail href='#' src={tshirt} alt="">
+                            <p style={{ textAlign: "center" }}>PRODUCT NAME</p>
+                            <p style={{fontWeight: "bold", textAlign: "center" }}><mark >20.000 IDR</mark></p>
+                        </Thumbnail>
+                    </div>   
+                    <div className="col-sm-3 col-xs-10">
+                        <Thumbnail href='#' src={tshirt} alt="">
+                            <p style={{ textAlign: "center" }}>PRODUCT NAME</p>
+                            <p style={{fontWeight: "bold", textAlign: "center" }}><mark >20.000 IDR</mark></p>
+                        </Thumbnail>
+                    </div>                       
                 </div>
             </div>
         )

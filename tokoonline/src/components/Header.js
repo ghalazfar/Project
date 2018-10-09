@@ -31,7 +31,7 @@ class Header extends Component {
         showRegister: false
     }
     
-    componentWillReceiveProps(newProps) { 
+    componentWillReceiveProps(newProps) {
         if(newProps.authGlobal.email !== ""){
             cookies.set('loginCookies', newProps.authGlobal.email, { path: '/'})
         }

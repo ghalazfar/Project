@@ -12,9 +12,8 @@ const cookies = new Cookies()
 class App extends Component {
   componentWillMount() {
     const loginCookies = cookies.get('loginCookies')
-    console.log(loginCookies)
     if(loginCookies !== undefined) {
-        this.props.keepLogin(loginCookies)
+      this.props.keepLogin(loginCookies)
     }
     else {
         this.props.cookiesChecked()

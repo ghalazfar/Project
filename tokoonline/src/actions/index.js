@@ -3,7 +3,7 @@ import { API_URL_1 } from '../supports/api-url/apiurl'
 
 export const onLogin = (user) => {
     return(dispatch) => {
-        axios.get(API_URL_1 + '/users', {
+        axios.post(API_URL_1 + '/login', {
             params: {
                 email: user.email,
                 password: user.password
@@ -29,7 +29,7 @@ export const onLogin = (user) => {
 
 export const keepLogin = (email) => {
     return(dispatch) => {
-        axios.get(API_URL_1 + '/users', {
+        axios.post(API_URL_1 + '/keeplogin', {
             params: {
                 email: email
             }
@@ -66,14 +66,15 @@ export const cookiesChecked = () => {
 
 export const onRegister = (user) => {
     return (dispatch) => {
-        axios.post(API_URL_1 + '/users', user
+        axios.post(API_URL_1 + '/register', user
         ).then((res) => {
-            console.log(res)
             dispatch({
                 type: "USER_LOGIN_SUCCESS",
                 payload: { 
                     username: res.data.username,
-                    email: res.data.email
+                    email: res.data.email,
+                    error: "",
+                    cookiesChecked: true
                 }
             })
             dispatch({
