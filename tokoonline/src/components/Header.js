@@ -195,22 +195,22 @@ class Header extends Component {
                             <Navbar.Collapse>
                                 <Nav>
                                     <NavDropdown title="Men">
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([1,1])}>Outerwear</Link></MenuItem>
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([1,2])}>Tops</Link></MenuItem>
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([1,3])}>Bottoms</Link></MenuItem>
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([1,4])}>Shoes</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=1&catdetail=1" onClick={() => this.props.categorySelect([1,1])}>Outerwear</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=1&catdetail=2" onClick={() => this.props.categorySelect([1,2])}>Tops</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=1&catdetail=3" onClick={() => this.props.categorySelect([1,3])}>Bottoms</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=1&catdetail=4" onClick={() => this.props.categorySelect([1,4])}>Shoes</Link></MenuItem>
                                     </NavDropdown>
                                     <NavDropdown title="Women">
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([2,1])}>Outerwear</Link></MenuItem>
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([2,2])}>Tops</Link></MenuItem>
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([2,3])}>Bottoms</Link></MenuItem>
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([2,4])}>Shoes</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=2&catdetail=5" onClick={() => this.props.categorySelect([2,5])}>Outerwear</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=2&catdetail=6" onClick={() => this.props.categorySelect([2,6])}>Tops</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=2&catdetail=7" onClick={() => this.props.categorySelect([2,7])}>Bottoms</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=2&catdetail=8" onClick={() => this.props.categorySelect([2,8])}>Shoes</Link></MenuItem>
                                     </NavDropdown>
                                     <NavDropdown title="Accessories">
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([3,1])}>Rings</Link></MenuItem>
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([3,2])}>Necklaces</Link></MenuItem>
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([3,3])}>Hats</Link></MenuItem>
-                                        <MenuItem><Link to="/productlist" onClick={() => this.props.categorySelect([3,4])}>Bags</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=3&catdetail=9" onClick={() => this.props.categorySelect([3,9])}>Rings</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=3&catdetail=10" onClick={() => this.props.categorySelect([3,10])}>Necklaces</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=3&catdetail=11" onClick={() => this.props.categorySelect([3,11])}>Hats</Link></MenuItem>
+                                        <MenuItem><Link to="/productlist?cat=3&catdetail=12" onClick={() => this.props.categorySelect([3,12])}>Bags</Link></MenuItem>
                                     </NavDropdown>
                                     <NavItem>
                                         <Link to="">Placeholder</Link>

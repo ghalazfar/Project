@@ -87,10 +87,25 @@ export const onRegister = (user) => {
 }
 
 export const categorySelect = (category) => {
-    return {
-        type: "CATEGORY_SELECT",
-        payload: {
-            selectedCategory: category
-        }
+    var APIURL = ''
+    if (category[1] == undefined){
+        APIURL = API_URL_1 + '/productlist?cat=' + category[0]
+    }
+    else {
+        APIURL = API_URL_1 + '/productlist?cat=' + category[0] + '&catdetail=' + category[1]
+    }
+    return (dispatch) => {
+        axios.get(APIURL
+        ).then((res) => {
+            dispatch({
+                type: "CATEGORY_SELECT",
+                payload: { 
+                    selectedCategory: category,
+                    productData: res.data
+                }
+            })
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 }

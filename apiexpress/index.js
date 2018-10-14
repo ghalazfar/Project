@@ -23,51 +23,41 @@ app.get('/', (req, res) => {
     res.send('<h1>API Project!</h1>')
 })
 
-// app.get('/karyawan', (req, res) => {
-//     MongoClient.connect(url, (err, db) => {
-//         karyawanCol = db.collection('karyawan')
-//         karyawanCol.find({}).toArray((err, docs) => {
-//             db.close()
-//             res.send(docs)
-//         })
-//     })
-// })
+app.get('/productlist', (req, res) => {
+    const { cat, catdetail } = req.query
+    var sqluser = ``
+    if (catdetail == undefined){
+        sqluser = `SELECT * 
+                    FROM products
+                    JOIN productcategory
+                    WHERE products.idproduct = productcategory.idproduct
+                    AND productcategory.idcatgroup = ${cat};`  
+    }
+    else {
+        sqluser = `SELECT * 
+                    FROM products
+                    JOIN productcategory
+                    WHERE products.idproduct = productcategory.idproduct
+                    AND productcategory.idcatgroup = ${cat}
+                    AND productcategory.idcatdetail = ${catdetail};` 
+    }               
+    conn.query(sqluser, (err, userdata) => {
+        if(err) throw err;
+        res.send(userdata)
+    })
+})
 
-// app.get('/karyawan/:nama', (req, res) => {
-//     MongoClient.connect(url, (err, db) => {
-//         karyawanCol = db.collection('karyawan')
-//         karyawanCol.find({nama: {'$regex': req.params.nama, '$options': 'i'}}).toArray((err, docs) => {
-//             db.close()
-//             res.send(docs)
-//         })
-//     })
-// })
+app.get('/productdetail', (req, res) => {
+    const { id } = req.query
 
-// app.post('/karyawan', (req, res) => {
-//     var obj = {}
-//     for (var i in req.body) {
-//         obj[i] = req.body[i]
-//     }
-//     MongoClient.connect(url, (err, db) => {
-//         karyawanCol = db.collection('karyawan')
-//         karyawanCol.insertMany(
-//             [ obj ],
-//             (err, results) => {
-//             db.close()
-//             res.send(results)
-//         })
-//     })
-// })
-
-// app.get('/users', (req, res) => {
-//     MongoClient.connect(url, (err, db) => {
-//         usersCollection = db.collection('users')
-//         usersCollection.find({}).toArray((err, docs) => {
-//             db.close()
-//             res.send(docs)
-//         })
-//     })
-// })
+    sqluser = `SELECT * 
+                FROM products
+                WHERE idproduct = ${id};`             
+    conn.query(sqluser, (err, userdata) => {
+        if(err) throw err;
+        res.send(userdata)
+    })
+})
 
 app.post('/keeplogin', (req, res) => {
     const { email } = req.body.params
@@ -119,28 +109,5 @@ app.post('/register', (req, res) => {
         }
     })
 })
-
-// app.put('/updatesemua/', (req, res) => {
-//     MongoClient.connect(url, (err, db) => {
-//         karyawanCol = db.collection('karyawan')
-//         karyawanCol.updateMany({}, {$set: {keturunan: "arab"}},
-//             (err, results) => {
-//             db.close()
-//             res.send(results)
-//         })
-//     })
-// })
-
-// app.delete('/karyawan/:nama', (req, res) => {
-//     var { nama, usia } = req.body
-//     MongoClient.connect(url, (err, db) => {
-//         karyawanCol = db.collection('karyawan')
-//         karyawanCol.deleteOne({ nama: req.params.nama },
-//             (err, results) => {
-//             db.close()
-//             res.send(results)
-//         })
-//     })
-// })
 
 app.listen(port, () => console.log(`Listening on port ${port}`))
