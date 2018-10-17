@@ -22,7 +22,7 @@ const cookies = new Cookies()
 class Footer extends Component {
     render() {
         return(
-            <div className="container-fluid" style={{marginLeft: "-15px", marginRight: "-15px", marginBottom:"75px"}}>
+            <div className="container-fluid" style={{marginLeft: "-15px", marginRight: "-15px", paddingBottom:"75px" }}>
                 <hr/>
                 <div className="col-sm-offset-4 col-sm-2 col-xs-12" style={{ marginTop: "30px"}}>
                 <div style={{fontWeight: "bold", textAlign: "left"}}>

@@ -83,18 +83,22 @@ class Header extends Component {
                 <Navbar.Text style={{marginTop: "20px"}}>
                     <Link to='/myaccount'style={{ fontSize: "small" }} >MY ACCOUNT</Link>
                     <Navbar.Link href='#' onClick={this.onLogOutClick} style={{ fontSize: "small", marginLeft: "20px" }} >Logout</Navbar.Link>
-                    <Button className="btn btn-success" style={{ marginLeft: "30px", padding: "0px", paddingRight: "40px"}}>
-                    <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px"}}>24</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
-                    </Button>  
+                    <Link to='/cart'>
+                        <Button className="btn btn-success" style={{ marginLeft: "30px", padding: "0px", paddingRight: "40px"}}>
+                        <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px"}}>24</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
+                        </Button>
+                    </Link>  
                 </Navbar.Text>
             )
         }
         return (
             <Navbar.Text >
                 <Navbar.Link href='#' onClick={this.openLogin} style={{ fontSize: "small", marginLeft: "113px"}}>Login</Navbar.Link>
-                <Button className="btn btn-success" style={{ marginLeft: "30px", padding: "0px", paddingRight: "40px"}}>
-                    <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px" }}>0</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
-                </Button>
+                <Link to='/cart'>
+                    <Button className="btn btn-success" style={{ marginLeft: "30px", padding: "0px", paddingRight: "40px"}}>
+                        <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px" }}>0</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
+                    </Button>
+                </Link>
             </Navbar.Text>
         )
     }

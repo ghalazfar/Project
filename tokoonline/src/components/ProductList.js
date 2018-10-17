@@ -26,12 +26,12 @@ class ProductList extends Component {
     renderproduct = () => {
         if (this.props.productData != undefined) {
             return this.props.productData.map((data) => 
-                <div className="col-sm-3 col-xs-10">
-                    <Thumbnail href='#' src={tshirt} alt="">
+                <Link to={'/productdetail?id=' + data.idproduct} className="col-sm-3 col-xs-10">
+                    <Thumbnail src={tshirt} alt="">
                         <p style={{ textAlign: "center" }}>{data.name}</p>
-                        <p style={{fontWeight: "bold", textAlign: "center" }}><mark >{data.price} IDR</mark></p>
+                        <p style={{fontWeight: "bold", textAlign: "center" }}><mark >IDR {(data.price)/1000}K</mark></p>
                     </Thumbnail>
-                </div>
+                </Link>
             )
         }
     }

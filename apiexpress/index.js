@@ -49,10 +49,11 @@ app.get('/productlist', (req, res) => {
 
 app.get('/productdetail', (req, res) => {
     const { id } = req.query
-
-    sqluser = `SELECT * 
-                FROM products
-                WHERE idproduct = ${id};`             
+    sqluser = `SELECT p.*, s.size, s.color, s.supply
+                FROM products p
+                JOIN productsupply s
+                WHERE p.idproduct = ${id}
+                AND s.idproduct = ${id};`             
     conn.query(sqluser, (err, userdata) => {
         if(err) throw err;
         res.send(userdata)
