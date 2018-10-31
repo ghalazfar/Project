@@ -1,4 +1,4 @@
-const INITIAL_STATE = { username: "", email: "", error: "", cookiesChecked: false }
+const INITIAL_STATE = { iduser: "", username: "", email: "", error: "", cookiesChecked: false }
 
 export default (state = INITIAL_STATE, action) => {
     switch(action.type) {

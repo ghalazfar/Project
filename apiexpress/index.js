@@ -26,25 +26,30 @@ app.get('/', (req, res) => {
 app.get('/productlist', (req, res) => {
     const { cat, catdetail } = req.query
     var sqluser = ``
-    if (catdetail == undefined){
-        sqluser = `SELECT * 
-                    FROM products
-                    JOIN productcategory
-                    WHERE products.idproduct = productcategory.idproduct
-                    AND productcategory.idcatgroup = ${cat};`  
-    }
-    else {
-        sqluser = `SELECT * 
+    if (cat !== undefined) {
+        if (catdetail !== undefined) {
+            sqluser = `SELECT * 
                     FROM products
                     JOIN productcategory
                     WHERE products.idproduct = productcategory.idproduct
                     AND productcategory.idcatgroup = ${cat}
                     AND productcategory.idcatdetail = ${catdetail};` 
-    }               
-    conn.query(sqluser, (err, userdata) => {
-        if(err) throw err;
-        res.send(userdata)
-    })
+        }
+        else {
+            sqluser = `SELECT * 
+                        FROM products
+                        JOIN productcategory
+                        WHERE products.idproduct = productcategory.idproduct
+                        AND productcategory.idcatgroup = ${cat};`  
+        }
+        conn.query(sqluser, (err, userdata) => {
+            if(err) throw err;
+            res.send(userdata)
+        })
+    }             
+    else {
+        res.sendFile(path.join(__dirname, './index.html'));
+    }    
 })
 
 app.get('/productdetail', (req, res) => {
@@ -108,6 +113,28 @@ app.post('/register', (req, res) => {
         else {
             res.send({ err: "Username already exist!"})
         }
+    })
+})
+
+app.post('/cart', (req, res) => {
+    const date = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    const { iduser, idproduct, price, size, color, quantity } = req.body
+    var data = { 
+        iduser: iduser,
+        idproduct: idproduct,
+        payment: price,
+        date: date,
+        size: size,
+        color: color,
+        quantity: quantity,
+        status: 'cart'
+    }
+    var sql = `INSERT INTO transaction SET ?`
+    conn.query(sql, data, (err, result) => {
+        if(err) res.send({err, status: 'Error'});
+        else {
+            res.send(result);             
+        }    
     })
 })
 

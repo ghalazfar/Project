@@ -11,7 +11,8 @@ export const onLogin = (user) => {
         }).then(user => {
             dispatch({
                 type: "USER_LOGIN_SUCCESS",
-                payload: { 
+                payload: {
+                    iduser: user.data[0].iduser,
                     username: user.data[0].username,
                     email: user.data[0].email,
                     error: "",
@@ -36,7 +37,8 @@ export const keepLogin = (email) => {
         }).then(user => {
             dispatch({
                 type: "USER_LOGIN_SUCCESS",
-                payload: { 
+                payload: {
+                    iduser: user.data[0].iduser, 
                     username: user.data[0].username,
                     email: user.data[0].email,
                     error: "",
@@ -70,7 +72,8 @@ export const onRegister = (user) => {
         ).then((res) => {
             dispatch({
                 type: "USER_LOGIN_SUCCESS",
-                payload: { 
+                payload: {
+                    iduser: user.data[0].iduser, 
                     username: res.data.username,
                     email: res.data.email,
                     error: "",
