@@ -116,7 +116,19 @@ app.post('/register', (req, res) => {
     })
 })
 
-app.post('/cart', (req, res) => {
+app.post('/getcart', (req, res) => {
+    const { iduser } = req.body
+    var sql = `SELECT * 
+                FROM transaction 
+                WHERE iduser = '${iduser}' 
+                AND status = 'cart';`
+    conn.query(sql, (err, data) => {
+        if(err) throw err;
+        res.send(data)
+    })
+})
+
+app.post('/addtocart', (req, res) => {
     const date = new Date().toISOString().slice(0, 19).replace('T', ' ')
     const { iduser, idproduct, price, size, color, quantity } = req.body
     var data = { 
@@ -133,6 +145,7 @@ app.post('/cart', (req, res) => {
     conn.query(sql, data, (err, result) => {
         if(err) res.send({err, status: 'Error'});
         else {
+            console.log('success')
             res.send(result);             
         }    
     })

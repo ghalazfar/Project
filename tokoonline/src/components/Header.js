@@ -19,7 +19,10 @@ import {
     onLogout,
     onRegister,
     categorySelect, 
-    cookiesChecked
+    cookiesChecked,
+    showLogin,
+    hideLogin,
+    showRegister
  } from '../actions';
 import logo from '../supports/img/logo.png';
 
@@ -27,22 +30,17 @@ const cookies = new Cookies()
 
 class Header extends Component {
     state = {
-        showLogin: false,
         showRegister: false
     }
     
+    componentWillMount() {
+        this.props.hideLogin()
+    }
+    
     componentWillReceiveProps(newProps) {
-        if(newProps.authGlobal.email !== ""){
-            cookies.set('loginCookies', newProps.authGlobal.email, { path: '/'})
+        if(newProps.auth.email !== ""){
+            cookies.set('loginCookies', newProps.auth.email, { path: '/'})
         }
-    }
-
-    closeLogin = () => {
-        this.setState({ showLogin: false })
-    }
-
-    openLogin = () => {
-        this.setState({ showLogin: true })
     }
 
     closeRegister = () => {
@@ -50,18 +48,20 @@ class Header extends Component {
     }
 
     openRegister = () => {
-        this.setState({ showLogin: false, showRegister: true })
+        this.props.hideLogin()
+        this.setState({ showRegister: true })
     }
 
     onRegisterBackLink = () => {
-        this.setState({ showLogin: true, showRegister: false })
+        this.props.showLogin()
+        this.setState({ showRegister: false })
     }
 
     onLoginClick = () => {
         var email= this.refs.emailLogin.value
         var password= this.refs.passwordLogin.value
         this.props.onLogin({ email, password })
-        this.setState({ showLogin: false })
+        this.props.hideLogin()
     }
 
     onRegisterClick = () => {
@@ -73,16 +73,12 @@ class Header extends Component {
         this.setState({ showRegister: false })
     }
 
-    onLogOutClick = () => {
-        this.props.onLogout();
-    }
-
     AccountBar = () => {
-        if(this.props.authGlobal.email != "") {
+        if(this.props.auth.email != "") {
             return (
                 <Navbar.Text style={{marginTop: "20px"}}>
                     <Link to='/myaccount'style={{ fontSize: "small" }} >MY ACCOUNT</Link>
-                    <Navbar.Link href='#' onClick={this.onLogOutClick} style={{ fontSize: "small", marginLeft: "20px" }} >Logout</Navbar.Link>
+                    <Navbar.Link href='#' onClick={this.props.onLogout} style={{ fontSize: "small", marginLeft: "20px" }} >Logout</Navbar.Link>
                     <Link to='/cart'>
                         <Button className="btn btn-success" style={{ marginLeft: "30px", padding: "0px", paddingRight: "40px"}}>
                         <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px"}}>24</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
@@ -93,7 +89,7 @@ class Header extends Component {
         }
         return (
             <Navbar.Text >
-                <Navbar.Link href='#' onClick={this.openLogin} style={{ fontSize: "small", marginLeft: "113px"}}>Login</Navbar.Link>
+                <Navbar.Link href='#' onClick={this.props.showLogin} style={{ fontSize: "small", marginLeft: "113px"}}>Login</Navbar.Link>
                 <Link to='/cart'>
                     <Button className="btn btn-success" style={{ marginLeft: "30px", padding: "0px", paddingRight: "40px"}}>
                         <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px" }}>0</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
@@ -105,7 +101,7 @@ class Header extends Component {
 
     renderLogin = () => {
         return(
-            <Modal show={this.state.showLogin} onHide={this.closeLogin}>
+            <Modal show={this.props.loginform.showLogin} onHide={this.props.hideLogin}>
                 <Modal.Body>
                     <img className="img-responsive" style={{ margin: "auto"}} alt="" src={logo}/>
                     <h3>Log in to your account</h3>
@@ -240,6 +236,15 @@ class Header extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { authGlobal: state.auth };
+  return { auth: state.auth, loginform: state.loginform };
 }
-export default connect(mapStateToProps, { onLogin, onLogout, onRegister, categorySelect, cookiesChecked })(Header);
+export default connect(mapStateToProps, { 
+                                onLogin,
+                                onLogout,
+                                onRegister,
+                                categorySelect,
+                                cookiesChecked,
+                                showLogin,
+                                hideLogin,
+                                showRegister                                
+                                })(Header);

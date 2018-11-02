@@ -5,12 +5,14 @@ import {
     Button,
     ButtonToolbar,
     ToggleButtonGroup,
-    ToggleButton
+    ToggleButton,
+    Tooltip
  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
 import { connect } from 'react-redux';
 import queryString from 'query-string';
+import { showLogin } from '../actions';
 import tshirt from '../supports/img/tshirt.jpg';
 import { API_URL_1 } from '../supports/api-url/apiurl';
 import loadinggif from '../supports/img/loading.gif';
@@ -20,7 +22,8 @@ class ProductDetail extends Component {
         productData: [''],
         selectedSize: '',
         selectedColor: '',
-        quantity: 1
+        quantity: 1,
+        addToCartPressed: false
     }
     componentWillMount() {
         const params = queryString.parse(this.props.location.search)
@@ -32,25 +35,21 @@ class ProductDetail extends Component {
 
     renderSize = () => {
         const clothesSizes = ['S', 'M', 'L', 'XL']
-        var foundSize = false
+        var available = false
         var inSupply = []
         for (var i in clothesSizes){
             for (var j in this.state.productData){
+                available = false
                 if (clothesSizes[i]==this.state.productData[j].size){
                     inSupply.push({
                         size: clothesSizes[i],
                         disabled: false
                     })
+                    available = true
+                    break
                 }
             }          
-            for (var j in this.state.productData){
-                foundSize = false
-                if (clothesSizes[i] == this.state.productData[j].size){
-                    foundSize = true
-                    break
-                }              
-            }
-            if (foundSize == false){
+            if (available == false){
                 inSupply.push({
                     size: clothesSizes[i],
                     disabled: true
@@ -58,12 +57,12 @@ class ProductDetail extends Component {
             }
         }
         return inSupply.map((supply) => 
-            <ToggleButton disabled={supply.disabled} onClick={() => {this.selectSize(supply.size)}}>{supply.size}</ToggleButton>
+            <ToggleButton value={supply.size} disabled={supply.disabled} onClick={() => {this.selectSize(supply.size)}}>{supply.size}</ToggleButton>
         )
     }
 
     selectSize = (size) => {
-        this.setState({selectedSize: size})
+        this.setState({selectedSize: size, selectedColor: ''})
     }
 
     renderColorBox = () => {
@@ -85,7 +84,7 @@ class ProductDetail extends Component {
             }
         }
         return colorList.map((color) => 
-            <ToggleButton bsSize="large" style={{ backgroundColor: `${color}`, padding: "7px" }} onClick={() => {this.selectColor(color)}}></ToggleButton>
+            <ToggleButton value={color} bsSize="large" style={{ backgroundColor: `${color}`, padding: "7px" }} onClick={() => {this.selectColor(color)}}></ToggleButton>
         )        
     }
 
@@ -98,23 +97,55 @@ class ProductDetail extends Component {
     }
 
     addToCart = () => {
-        axios.post(API_URL_1 + '/cart', {
-            iduser: this.props.authGlobal.iduser,
-            idproduct: this.state.productData[0].idproduct,
-            price: this.state.price,
-            size: this.state.selectedSize,
-            color: this.state.selectedColor,
-            quantity: this.state.quantity
-        }).then(res => {
-            this.setState({ redirectToCheckout: true})
-        }).catch((err) => {
-          console.log(err)
-          alert("ERROR")
-        })
-      }
+        this.setState({ addToCartPressed: true })
+        if (this.state.selectedSize!==''&&this.state.selectedColor!=='') {
+            if(this.props.auth.email !=='') {
+                axios.post(API_URL_1 + '/addtocart', {
+                    iduser: this.props.auth.iduser,
+                    idproduct: this.state.productData[0].idproduct,
+                    price: this.state.quantity*this.state.productData[0].price,
+                    size: this.state.selectedSize,
+                    color: this.state.selectedColor,
+                    quantity: this.state.quantity
+                }).then(res => {
+                    console.log(res)
+                }).catch((err) => {
+                    console.log(err)
+                    alert("ERROR")
+                })
+            }
+            else {
+                this.props.showLogin()
+            }
+        }
+    }
+
+    renderColorHead () {
+        if (this.state.selectedSize !== '') return 'COLOR'
+        else return <span style={{ opacity: 0 }}>_</span>
+    }
+
+    renderSizeTooltip () {
+        if (this.state.addToCartPressed==true&&this.state.selectedSize==''){
+            return (
+                <Tooltip placement="bottom" className="in" id="tooltip-right">
+                Please select a size
+                </Tooltip>
+            )
+        }
+    }
+
+    renderColorTooltip () {
+        if (this.state.addToCartPressed==true&&this.state.selectedSize!==''&&this.state.selectedColor==''){
+            return (
+                <Tooltip placement="bottom" className="in" id="tooltip-right">
+                Please select a color
+                </Tooltip>
+            )
+        }
+    }
 
     render() {
-        console.log(this.state)
         if (this.state.productData[0] !== '') {
             return(
                 <div className="container">
@@ -127,29 +158,38 @@ class ProductDetail extends Component {
                     </div>
                     <div className="col-sm-5 col-xs-12">
                         <h4 style={{ fontWeight: "bold" }}>{this.state.productData[0].name}</h4>
-                        <h4 style={{ fontWeight: "bold" }}>SIZE</h4>
+                        <h4 className="col-xs-6" style={{ fontWeight: "bold", padding: 0 }}>SIZE</h4>
+                        <h4 className="col-xs-6" style={{ fontWeight: "bold", padding: 0 }}>{this.renderColorHead()}</h4>
                         <hr/>
-                        <ButtonToolbar>
-                            <ToggleButtonGroup bsSize="xsmall" type="radio" name="options">
-                                {this.renderSize()}
-                            </ToggleButtonGroup>
-                        </ButtonToolbar>
-                        <h4 style={{ fontWeight: "bold" }}>COLOR</h4>
                         <hr/>
-                        <ButtonToolbar>
-                            <ToggleButtonGroup bsSize="xsmall" type="radio" name="options">
-                                {this.renderColorBox()}
-                            </ToggleButtonGroup>
-                        </ButtonToolbar>                        
+                        <hr/>
+                        <div className="col-xs-6" style={{ padding: 0 }}>                         
+                            <ButtonToolbar>
+                                <ToggleButtonGroup bsSize="xsmall" type="radio" name="options">
+                                    {this.renderSize()}
+                                </ToggleButtonGroup>
+                            </ButtonToolbar>
+                            {this.renderSizeTooltip()}
+                        </div>    
+                        <div className="col-xs-6" style={{ padding: 0 }}>    
+                            <ButtonToolbar>
+                                <ToggleButtonGroup bsSize="xsmall" type="radio" name="options">
+                                    {this.renderColorBox()}
+                                </ToggleButtonGroup>
+                            </ButtonToolbar>
+                            {this.renderColorTooltip()}
+                        </div>
+                        <div className="col-xs-12" style={{ padding: 0 }}>                          
                         <h4 style={{ fontWeight: "bold" }}>QUANTITY</h4>
                         <hr/>
                         <form className="col-xs-3" style={{ marginLeft: "-14px" }}>
                             <input type="number" defaultValue="1" className="form-control input-sm" ref="quantity" onChange={()=> {this.selectQuantity(this.refs.quantity.value)}}/>
                         </form>
                         <br/>
-                        <div className="center" style={{ marginTop: "50px", marginBottom: "50px"}}>
+                        </div>
+                        <div className="col-xs-12" style={{ padding: 0, paddingTop: "50px", paddingBottom: "50px"}}>
                             <Button style={{ padding: "0px", paddingRight: "5px" }} bsStyle="success" bsSize="xsmall" onClick={this.addToCart}>
-                                <span style={{ fontWeight: "bold", fontSize: "large" }}><mark style={{ padding: "4px", paddingBottom: "5px", marginLeft: "-3px" }}>IDR {this.state.price}</mark> ADD TO CART</span>
+                                <span style={{ fontWeight: "bold", fontSize: "large" }}><mark style={{ padding: "4px", paddingBottom: "5px", marginLeft: "-3px" }}>IDR {this.state.productData[0].price*this.state.quantity}</mark> ADD TO CART</span>
                             </Button>
                         </div>
                     </div>
@@ -174,7 +214,7 @@ class ProductDetail extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return { authGlobal: state.auth };
-  }
-  export default connect(mapStateToProps)(ProductDetail);
+    return { auth: state.auth, loginform: state.loginform }
+}
+export default connect(mapStateToProps, { showLogin })(ProductDetail);
   

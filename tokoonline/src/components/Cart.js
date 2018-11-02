@@ -4,12 +4,26 @@ import {
     Button
  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import queryString from 'query-string';
+import { connect } from 'react-redux';
+import axios from 'axios'
+import { API_URL_1 } from '../supports/api-url/apiurl';
 import tshirt from '../supports/img/tshirt.jpg';
 
 class Cart extends Component {
+    state = {
+        cartData: ''
+    }
+    
+    componentWillMount() {
+        axios.post(API_URL_1 + '/getcart', {
+            iduser: this.props.auth.iduser
+        }).then(res => {
+        this.setState({ cartData: res.data })
+        })
+    }
     
     render() {
+        console.log(this.state.cartData)
         return(
             <div>
                 <div className="container-fluid">
@@ -82,4 +96,7 @@ class Cart extends Component {
     }    
 }
 
-export default Cart;
+const mapStateToProps = (state) => {
+    return { auth: state.auth }
+}
+export default connect(mapStateToProps)(Cart);
