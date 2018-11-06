@@ -81,7 +81,7 @@ class Header extends Component {
                     <Navbar.Link href='#' onClick={this.props.onLogout} style={{ fontSize: "small", marginLeft: "20px" }} >Logout</Navbar.Link>
                     <Link to='/cart'>
                         <Button className="btn btn-success" style={{ marginLeft: "30px", padding: "0px", paddingRight: "40px"}}>
-                        <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px"}}>24</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
+                        <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px"}}>{this.props.onCart.length}</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
                         </Button>
                     </Link>  
                 </Navbar.Text>
@@ -236,7 +236,7 @@ class Header extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { auth: state.auth, loginform: state.loginform };
+  return { auth: state.auth, loginform: state.loginform, onCart: state.transaction.onCart };
 }
 export default connect(mapStateToProps, { 
                                 onLogin,

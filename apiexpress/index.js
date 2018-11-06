@@ -81,7 +81,7 @@ app.post('/login', (req, res) => {
         email: email,
         hashpassword: hashpassword
     }
-    var sqlget = `SELECT username, email, hashpassword FROM users WHERE email = '${email}'`
+    var sqlget = `SELECT * FROM users WHERE email = '${email}'`
     conn.query(sqlget, data, (err, user) => {
         if (err) throw err;
         if (user.length == 0 || user[0].hashpassword !== data.hashpassword ) {
@@ -100,7 +100,7 @@ app.post('/register', (req, res) => {
         email: email,
         hashpassword: Crypto.createHmac("sha256", "abc123").update(password).digest("hex")
     }
-    var sqlget = `SELECT username, email FROM users WHERE username = '${username}' OR email = '${email}'` 
+    var sqlget = `SELECT * FROM users WHERE username = '${username}' OR email = '${email}'` 
     conn.query(sqlget, data, (err, user) => {
         if (err) throw err;
         if (user.length == 0 ) {
@@ -116,15 +116,35 @@ app.post('/register', (req, res) => {
     })
 })
 
-app.post('/getcart', (req, res) => {
+app.post('/usertransaction', (req, res) => {
     const { iduser } = req.body
-    var sql = `SELECT * 
-                FROM transaction 
+    var sqlcart = `SELECT t.*, p.*
+                FROM transaction t
+                JOIN products p
+                ON t.idproduct = p.idproduct
                 WHERE iduser = '${iduser}' 
                 AND status = 'cart';`
-    conn.query(sql, (err, data) => {
+    var sqlprocess = `SELECT t.*, p.*
+                    FROM transaction t
+                    JOIN products p
+                    ON t.idproduct = p.idproduct
+                    WHERE iduser = '${iduser}' 
+                    AND status = 'on process';`
+    var sqldelivered = `SELECT t.*, p.*
+                        FROM transaction t
+                        JOIN products p
+                        ON t.idproduct = p.idproduct
+                        WHERE iduser = '${iduser}' 
+                        AND status = 'delivered';`
+    conn.query(sqlcart, (err, onCart) => {
         if(err) throw err;
-        res.send(data)
+        conn.query(sqlprocess, (err, onProcess) => {
+            if(err) throw err;
+            conn.query(sqldelivered, (err, delivered) => {
+                if(err) throw err;
+                res.send({ onCart, onProcess, delivered })
+            })
+        })
     })
 })
 

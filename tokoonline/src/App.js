@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import Cookies from 'universal-cookie'
 import './App.css';
 import AppInit from './components/AppInit';
-import { keepLogin, cookiesChecked } from './actions'
+import { keepLogin, cookiesChecked, getUserTransaction } from './actions'
 import loadinggif from './supports/img/loading.gif';
 
 const cookies = new Cookies()
@@ -21,13 +21,23 @@ class App extends Component {
   }
 
   componentWillReceiveProps(newProps) { 
-    if(newProps.authGlobal.username === ""){
-        cookies.remove('loginCookies')
+    if(newProps.auth.email === ""){
+      cookies.remove('loginCookies')
     }
+    // else if(newProps.auth.email !== ""){
+    //   getUserTransaction(newProps.auth.idusers)
+    // }
   }
 
+  // componentDidUpdate() {
+  //   if(this.props.auth.email !== ""){
+  //     this.props.getUserTransaction(this.props.auth.idusers)
+  //   }
+  // }
+
   render() {
-    if (this.props.authGlobal.cookiesChecked){
+    console.log(this.props.transaction)
+    if (this.props.auth.cookiesChecked){
       return (
         <AppInit className="App"/>
       );
@@ -42,7 +52,7 @@ class App extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { authGlobal: state.auth }
+  return { auth: state.auth }
 }
-export default withRouter(connect(mapStateToProps, { keepLogin, cookiesChecked })(App));
+export default withRouter(connect(mapStateToProps, { keepLogin, cookiesChecked, getUserTransaction })(App));
 
