@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios'
 import { connect } from 'react-redux';
 import queryString from 'query-string';
-import { showLogin } from '../actions';
+import { showLogin, getUserTransaction } from '../actions';
 import tshirt from '../supports/img/tshirt.jpg';
 import { API_URL_1 } from '../supports/api-url/apiurl';
 import loadinggif from '../supports/img/loading.gif';
@@ -93,7 +93,8 @@ class ProductDetail extends Component {
     }
     
     selectQuantity = (qty) => {
-        this.setState({quantity: qty, price: this.state.productData[0].price*qty })
+        if (qty <= 0) this.setState({quantity: 1, price: this.state.productData[0].price })
+        else this.setState({quantity: qty, price: this.state.productData[0].price*qty })
     }
 
     addToCart = () => {
@@ -109,6 +110,7 @@ class ProductDetail extends Component {
                     quantity: this.state.quantity
                 }).then(res => {
                     console.log(res)
+                    this.props.getUserTransaction(this.props.auth.iduser)
                 }).catch((err) => {
                     console.log(err)
                     alert("ERROR")
@@ -183,7 +185,7 @@ class ProductDetail extends Component {
                         <h4 style={{ fontWeight: "bold" }}>QUANTITY</h4>
                         <hr/>
                         <form className="col-xs-3" style={{ marginLeft: "-14px" }}>
-                            <input type="number" defaultValue="1" className="form-control input-sm" ref="quantity" onChange={()=> {this.selectQuantity(this.refs.quantity.value)}}/>
+                            <input type="number" value={this.state.quantity} className="form-control input-sm" ref="quantity" onChange={()=> {this.selectQuantity(this.refs.quantity.value)}}/>
                         </form>
                         <br/>
                         </div>
@@ -216,5 +218,5 @@ class ProductDetail extends Component {
 const mapStateToProps = (state) => {
     return { auth: state.auth, loginform: state.loginform }
 }
-export default connect(mapStateToProps, { showLogin })(ProductDetail);
+export default connect(mapStateToProps, { showLogin, getUserTransaction })(ProductDetail);
   

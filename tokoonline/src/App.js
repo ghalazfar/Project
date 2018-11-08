@@ -24,16 +24,7 @@ class App extends Component {
     if(newProps.auth.email === ""){
       cookies.remove('loginCookies')
     }
-    // else if(newProps.auth.email !== ""){
-    //   getUserTransaction(newProps.auth.idusers)
-    // }
   }
-
-  // componentDidUpdate() {
-  //   if(this.props.auth.email !== ""){
-  //     this.props.getUserTransaction(this.props.auth.idusers)
-  //   }
-  // }
 
   render() {
     console.log(this.props.transaction)

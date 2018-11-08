@@ -181,7 +181,7 @@ class Header extends Component {
                                 <InputGroup>
                                 <FormControl type="text" placeholder="Search items..." />
                                 <InputGroup.Button>
-                                    <Button style={{ fontWeight: "bold"}}>SEARCH</Button>
+                                    <Link to="/search"><Button style={{ fontWeight: "bold"}}>SEARCH</Button></Link>
                                 </InputGroup.Button>                      
                                 </InputGroup>
                             </FormGroup>

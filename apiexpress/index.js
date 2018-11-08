@@ -60,7 +60,8 @@ app.get('/productdetail', (req, res) => {
                 WHERE p.idproduct = ${id}
                 AND s.idproduct = ${id};`             
     conn.query(sqluser, (err, userdata) => {
-        if(err) throw err;
+        if(err) console.log(err);
+        console.log(userdata)
         res.send(userdata)
     })
 })
@@ -169,6 +170,48 @@ app.post('/addtocart', (req, res) => {
             res.send(result);             
         }    
     })
+})
+
+app.put('/cartquantity', (req, res) => {
+    const { type, idtransaction, price } = req.body
+    var sql = ''
+    if (type == 'add') {
+        sql = `UPDATE transaction 
+                SET quantity = quantity + 1,
+                payment = ${price} * quantity
+                WHERE idtransaction = '${idtransaction}';`
+    }
+    else {
+        sql = `UPDATE transaction 
+                SET quantity = quantity - 1,
+                payment = ${price} * quantity
+                WHERE idtransaction = '${idtransaction}';`
+    }
+    conn.query(sql, (err, results) => {
+        if(err) throw err;      
+        res.send('success')
+    })    
+})
+
+app.put('/deletecart', (req, res) => {
+    const { idtransaction } = req.body
+    var sql = `DELETE FROM transaction WHERE idtransaction = ${idtransaction};`
+    conn.query(sql, (err, results) => {
+        if(err) throw err;      
+        res.send('success')
+    })    
+})
+
+app.put('/checkout', (req, res) => {
+    const { iduser } = req.body
+    var sql = `UPDATE transaction 
+                SET status = 'on process'
+                WHERE iduser = '${iduser}'
+                AND status = 'cart';`
+    conn.query(sql, (err, results) => {
+        if(err) throw err;      
+        res.send('success')
+    })    
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}`))

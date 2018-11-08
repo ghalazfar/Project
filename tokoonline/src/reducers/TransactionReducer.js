@@ -1,4 +1,4 @@
-const INITIAL_STATE = { onCart: '', onProcess: '', delivered: '' }
+const INITIAL_STATE = { onCart: [], onProcess: [], delivered: [] }
 
 export default (state = INITIAL_STATE, action) => {
     switch(action.type) {
