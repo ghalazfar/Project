@@ -25,26 +25,47 @@ app.get('/', (req, res) => {
 
 app.get('/productlist', (req, res) => {
     const { cat, catdetail } = req.query
-    var sqluser = ``
+    var sql = ``
     if (cat !== undefined) {
         if (catdetail !== undefined) {
-            sqluser = `SELECT * 
+            sql = `SELECT * 
                     FROM products
                     JOIN productcategory
                     WHERE products.idproduct = productcategory.idproduct
                     AND productcategory.idcatgroup = ${cat}
-                    AND productcategory.idcatdetail = ${catdetail};` 
+                    AND productcategory.idcatdetail = ${catdetail}
+                    ORDER BY products.price;` 
         }
         else {
-            sqluser = `SELECT * 
+            sql = `SELECT * 
                         FROM products
                         JOIN productcategory
                         WHERE products.idproduct = productcategory.idproduct
-                        AND productcategory.idcatgroup = ${cat};`  
+                        AND productcategory.idcatgroup = ${cat}
+                        ORDER BY products.price;`  
         }
-        conn.query(sqluser, (err, userdata) => {
+        conn.query(sql, (err, data) => {
             if(err) throw err;
-            res.send(userdata)
+            res.send(data)
+        })
+    }             
+    else {
+        res.sendFile(path.join(__dirname, './index.html'));
+    }    
+})
+
+app.get('/search', (req, res) => {
+    const { q } = req.query
+    var sql = ``
+    if (q !== undefined) {
+        const query = q.toUpperCase()
+        sql = `SELECT * 
+                FROM products
+                WHERE name LIKE '%${query}%'
+                ORDER BY price;`
+        conn.query(sql, (err, data) => {
+            if(err) throw err;
+            res.send(data)
         })
     }             
     else {
@@ -54,15 +75,14 @@ app.get('/productlist', (req, res) => {
 
 app.get('/productdetail', (req, res) => {
     const { id } = req.query
-    sqluser = `SELECT p.*, s.size, s.color, s.supply
+    sql = `SELECT p.*, s.size, s.color, s.supply
                 FROM products p
                 JOIN productsupply s
                 WHERE p.idproduct = ${id}
                 AND s.idproduct = ${id};`             
-    conn.query(sqluser, (err, userdata) => {
+    conn.query(sql, (err, data) => {
         if(err) console.log(err);
-        console.log(userdata)
-        res.send(userdata)
+        res.send(data)
     })
 })
 

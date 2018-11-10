@@ -13,6 +13,10 @@ import { categorySelect } from '../actions'
 import tshirt from '../supports/img/tshirt.jpg';
 
 class ProductList extends Component {
+    state = {
+        list: ''
+    }
+
     componentWillMount() {
         const params = queryString.parse(this.props.location.search)
         if (params.catdetail == undefined ) {
@@ -21,6 +25,25 @@ class ProductList extends Component {
         else {
             this.props.categorySelect([params.cat, params.catdetail]) 
         }
+    }
+
+    fnsort = (property, order) => {
+        if(order == 'ascending') {
+            return ((a, b) => {
+                return a[property] > b[property]
+            })
+        }
+        else if (order == 'descending') {
+            return ((a, b) => {
+                return a[property] < b[property]
+            })
+        }
+    }
+    
+    selectSort = (property, order) => {
+        var list = this.props.productData
+        var newList = list.sort(this.fnsort(property, order))
+        this.setState({ list: newList })
     }
 
     renderproduct = () => {
@@ -83,7 +106,18 @@ class ProductList extends Component {
                     </PanelGroup>
                 </div>
                 <div className="col-sm-9 col-xs-12">
-                    {this.renderproduct()}                   
+                    <div className="form-inline" style={{ margin: "15px", marginTop: "0px"}}>
+                        <label className="col-form-label"><span style={{ fontSize: "small" }}>Sort by:</span></label>
+                        <select ref="sort" defaultValue={1} className="form-control input-sm" style={{ marginLeft: "20px"}}>
+                            <option key={1} value={1} onClick={() => this.selectSort('price', 'ascending')}> Price low to high </option>
+                            <option key={2} value={2} onClick={() => this.selectSort('price', 'descending')}> Price high to low </option>
+                            <option key={3} value={3} onClick={() => this.selectSort('name', 'ascending')}> Name: A - Z </option>
+                            <option key={4} value={4} onClick={() => this.selectSort('name', 'descending')}> Name: Z - A </option>   
+                        </select>
+                    </div>
+                    <div className="col-xs-12">
+                        {this.renderproduct()}
+                    </div>                                      
                 </div>
             </div>
         )

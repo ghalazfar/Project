@@ -27,7 +27,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.props.transaction)
     if (this.props.auth.cookiesChecked){
       return (
         <AppInit className="App"/>

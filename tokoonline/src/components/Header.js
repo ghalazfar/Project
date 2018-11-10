@@ -5,10 +5,7 @@ import {
     NavItem, 
     NavDropdown, 
     MenuItem, 
-    FormGroup, 
-    FormControl, 
     Button, 
-    InputGroup,
     Modal
  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -22,7 +19,8 @@ import {
     cookiesChecked,
     showLogin,
     hideLogin,
-    showRegister
+    showRegister,
+    searchQuery
  } from '../actions';
 import logo from '../supports/img/logo.png';
 
@@ -30,7 +28,8 @@ const cookies = new Cookies()
 
 class Header extends Component {
     state = {
-        showRegister: false
+        showRegister: false,
+        searchQuery: ''
     }
     
     componentWillMount() {
@@ -164,6 +163,27 @@ class Header extends Component {
         )
     }
 
+    renderSearchBar = () =>{
+        if (this.state.searchQuery == '') {
+            return (
+                <div className="input-group">
+                    <input type="text" class="form-control" placeholder="Search items..." ref="searchbar" onChange={() => this.setState({ searchQuery: this.refs.searchbar.value })}/>
+                    <span className="input-group-btn">
+                        <button className="btn btn-default" type="button" style={{ fontWeight: "bold"}}>SEARCH</button>
+                    </span>                                
+                </div>
+            )
+        }
+        return (
+            <div className="input-group">
+                <input type="text" class="form-control" placeholder="Search items..." ref="searchbar" onChange={() => this.setState({ searchQuery: this.refs.searchbar.value })}/>
+                <span className="input-group-btn">
+                    <Link to={'/search?q=' + this.state.searchQuery}><button className="btn btn-default" type="button" style={{ fontWeight: "bold"}} onClick={() => this.props.searchQuery(this.refs.searchbar.value)}>SEARCH</button></Link>
+                </span>                                
+            </div>
+        )
+    }
+
     renderNavbar() {
         return(
             <div fluid={true} staticTop={true}>
@@ -177,14 +197,7 @@ class Header extends Component {
                             <Navbar.Toggle style={{ bottom: "8px"}} />                            
                         </Navbar.Header>
                         <div style={{ marginTop: "8px" }} className="col-lg-6 col-lg-push-1 col-md-4 col-md-push-1 col-sm-8 col-xs-12">
-                            <FormGroup>
-                                <InputGroup>
-                                <FormControl type="text" placeholder="Search items..." />
-                                <InputGroup.Button>
-                                    <Link to="/search"><Button style={{ fontWeight: "bold"}}>SEARCH</Button></Link>
-                                </InputGroup.Button>                      
-                                </InputGroup>
-                            </FormGroup>
+                            {this.renderSearchBar()}
                         </div>
                         <div className="container" >
                             <Nav pullRight style={{marginTop: "-3px", marginLeft: "7px"}} className="col-lg-4 col-lg-push-1 col-md-5 col-md-push-1 col-sm-8 col-xs-12">
@@ -246,5 +259,6 @@ export default connect(mapStateToProps, {
                                 cookiesChecked,
                                 showLogin,
                                 hideLogin,
-                                showRegister                                
+                                showRegister,
+                                searchQuery
                                 })(Header);
