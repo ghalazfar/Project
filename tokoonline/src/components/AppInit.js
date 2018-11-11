@@ -7,6 +7,11 @@ import ProductDetail from './ProductDetail';
 import Cart from './Cart';
 import Footer from './Footer';
 import Search from './Search';
+import MyAccount from './MyAccount';
+import Profile from './Profile';
+import Orders from './Orders';
+import Address from './Address';
+import Admin from './Admin';
 import Error404 from './Error404';
 
 class AppInit extends Component {
@@ -20,6 +25,11 @@ class AppInit extends Component {
             <Route path="/productdetail" component={ProductDetail}/>
             <Route path="/cart" component={Cart}/>
             <Route path="/search" component={Search}/>
+            <Route path="/myaccount" component={MyAccount}/>
+            <Route path="/profile" component={Profile}/>
+            <Route path="/orders" component={Orders}/>
+            <Route path="/address" component={Address}/>
+            <Route path="/admin" component={Admin}/>
             <Route component={Error404}/>
           </Switch>
           <Footer/>

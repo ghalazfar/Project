@@ -12,7 +12,7 @@ import { API_URL_1 } from '../supports/api-url/apiurl';
 import tshirt from '../supports/img/tshirt.jpg';
 import { getUserTransaction } from '../actions';
 
-class Cart extends Component {
+class Orders extends Component {
     updateQuantity = (type, idtransaction, price) => {
         axios.put(API_URL_1 + '/cartquantity', {
             type: type,
@@ -130,8 +130,8 @@ class Cart extends Component {
             return (
                 <div className="col-sm-offset-8 col-sm-3 col-xs-12">
                     <p style={{ fontSize: "small" }}><span className="col-xs-6">Subtotal</span><span className="col-xs-6" style={{ textAlign: "right"}}>IDR {totalPayment}</span></p>                               
-                    <p style={{ fontSize: "small" }}><span className="col-xs-6">Shipping</span><span className="col-xs-6" style={{ textAlign: "right"}}>IDR 12000</span></p>   
-                    <p style={{ fontSize: "small", fontWeight: "bold" }}><span className="col-xs-6">Subtotal</span><span className="col-xs-6" style={{ textAlign: "right"}}>IDR {totalPayment+12000}</span></p>   
+                    <p style={{ fontSize: "small" }}><span className="col-xs-6">Shipping</span><span className="col-xs-6" style={{ textAlign: "right"}}>IDR 50K</span></p>   
+                    <p style={{ fontSize: "small", fontWeight: "bold" }}><span className="col-xs-6">Subtotal</span><span className="col-xs-6" style={{ textAlign: "right"}}>IDR 250K</span></p>   
                     <Button block style={{ padding: "0px" }} bsStyle="success" bsSize="xsmall" onClick={() => this.checkOut(this.props.auth.iduser)}>
                         <span style={{ fontWeight: "bold", fontSize: "large" }}>CHECKOUT</span>
                     </Button>
@@ -166,4 +166,4 @@ class Cart extends Component {
 const mapStateToProps = (state) => {
     return { auth: state.auth, onCart: state.transaction.onCart}
 }
-export default connect(mapStateToProps,{ getUserTransaction })(Cart);
+export default connect(mapStateToProps,{ getUserTransaction })(Orders);

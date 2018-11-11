@@ -119,7 +119,8 @@ app.post('/register', (req, res) => {
     var data = {
         username: username,
         email: email,
-        hashpassword: Crypto.createHmac("sha256", "abc123").update(password).digest("hex")
+        hashpassword: Crypto.createHmac("sha256", "abc123").update(password).digest("hex"),
+        status: 'regular'
     }
     var sqlget = `SELECT * FROM users WHERE username = '${username}' OR email = '${email}'` 
     conn.query(sqlget, data, (err, user) => {
@@ -232,6 +233,23 @@ app.put('/checkout', (req, res) => {
         if(err) throw err;      
         res.send('success')
     })    
+})
+
+app.get('/admin', (req, res) => {
+    var sqlproduct = `SELECT * FROM products;`               
+    var sqluser = `SELECT * FROM users;`
+    var sqltransaction = `SELECT * FROM transaction;`
+    conn.query(sqlproduct, (err, dataproduct) => {
+        if(err) throw err;
+        conn.query(sqluser, (err, datauser) => {
+            if(err) throw err;
+            conn.query(sqltransaction, (err, datatransaction) => {
+                if(err) throw err;
+            var data = { productList: dataproduct, userList: datauser, transactionList: datatransaction}
+            res.send(data);     
+            })       
+        })
+    })
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}`))

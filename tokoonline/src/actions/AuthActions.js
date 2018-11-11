@@ -17,6 +17,7 @@ export const onLogin = (user) => {
                     iduser: user.data[0].iduser,
                     username: user.data[0].username,
                     email: user.data[0].email,
+                    status: user.data[0].status,
                     error: "",
                     cookiesChecked: true
                 }
@@ -44,6 +45,7 @@ export const keepLogin = (email) => {
                     iduser: user.data[0].iduser, 
                     username: user.data[0].username,
                     email: user.data[0].email,
+                    status: user.data[0].status,
                     error: "",
                     cookiesChecked: true
                 }
@@ -80,6 +82,7 @@ export const onRegister = (user) => {
                     iduser: res.data.iduser, 
                     username: res.data.username,
                     email: res.data.email,
+                    status: res.data.status,
                     error: "",
                     cookiesChecked: true
                 }

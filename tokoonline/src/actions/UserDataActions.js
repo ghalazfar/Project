@@ -17,3 +17,9 @@ export const getUserTransaction = (iduser) => {
         })
     }
 }
+
+export const clearCart = () => {
+    return {
+        type: "CLEAR_CART"
+    }
+}

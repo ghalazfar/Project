@@ -6,7 +6,9 @@ import {
     ButtonToolbar,
     ToggleButtonGroup,
     ToggleButton,
-    Tooltip
+    Tooltip,
+    Tabs,
+    Tab
  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
@@ -196,11 +198,21 @@ class ProductDetail extends Component {
                         </div>
                     </div>
                     <div className="col-xs-12">
-                        <Panel style={{ marginRight: "-30px", marginLeft: "-30px" }}>
-                            <Panel.Body>
-                                {this.state.productData[0].description}
-                            </Panel.Body>
-                        </Panel>
+                    <Tabs defaultActiveKey={1} justified animation={false} >
+                        <Tab eventKey={1} title="Description">
+                        <Panel style={{ marginTop: "-1px" }}>
+                                <Panel.Body>
+                                    {this.state.productData[0].description}
+                                </Panel.Body>
+                            </Panel>
+                        </Tab>
+                        <Tab eventKey={2} title="Size Chart">
+                            Tab 2 content
+                        </Tab>
+                    </Tabs>
+                    </div>
+                    <div className="col-xs-12">
+                        
                     </div>
                 </div>
             )

@@ -20,7 +20,8 @@ import {
     showLogin,
     hideLogin,
     showRegister,
-    searchQuery
+    searchQuery,
+    clearCart
  } from '../actions';
 import logo from '../supports/img/logo.png';
 
@@ -72,12 +73,17 @@ class Header extends Component {
         this.setState({ showRegister: false })
     }
 
+    onLogoutClick = () => {
+        this.props.onLogout()
+        this.props.clearCart()
+    }
+
     AccountBar = () => {
         if(this.props.auth.email != "") {
             return (
                 <Navbar.Text style={{marginTop: "20px"}}>
                     <Link to='/myaccount'style={{ fontSize: "small" }} >MY ACCOUNT</Link>
-                    <Navbar.Link href='#' onClick={this.props.onLogout} style={{ fontSize: "small", marginLeft: "20px" }} >Logout</Navbar.Link>
+                    <Navbar.Link href='#' onClick={this.onLogoutClick} style={{ fontSize: "small", marginLeft: "20px" }} >Logout</Navbar.Link>
                     <Link to='/cart'>
                         <Button className="btn btn-success" style={{ marginLeft: "30px", padding: "0px", paddingRight: "40px"}}>
                         <span className="badge" style={{ fontWeight: "bold", fontSize: "large", marginLeft: "-16px"}}>{this.props.onCart.length}</span><span style={{ fontWeight: "bold", fontSize: "small", marginLeft: "20px", marginRight: "-10px"}}>CART</span>                  
@@ -260,5 +266,6 @@ export default connect(mapStateToProps, {
                                 showLogin,
                                 hideLogin,
                                 showRegister,
-                                searchQuery
+                                searchQuery,
+                                clearCart
                                 })(Header);
