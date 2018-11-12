@@ -4,16 +4,24 @@ import {
     Jumbotron
  } from 'react-bootstrap';
 import { Link, Redirect } from 'react-router-dom';
-import axios from 'axios'
 import { connect } from 'react-redux';
-import queryString from 'query-string';
 import { showLogin, getUserTransaction } from '../actions';
-import tshirt from '../supports/img/tshirt.jpg';
-import { API_URL_1 } from '../supports/api-url/apiurl';
-import loadinggif from '../supports/img/loading.gif';
 
 class MyAccount extends Component {
+    renderAdmin = () => {
+        if (this.props.auth.status == 'admin') {
+            return (
+                <Link to="/admin">
+                    <Jumbotron className="col-xs-12">
+                    <h2>Administration</h2>
+                    </Jumbotron>
+                </Link>   
+            )
+        }
+    }
+
     render() {
+        console.log(this.props.auth.status)
         if (this.props.auth.email == ""){
             return <Redirect to='/' />
         }
@@ -34,11 +42,7 @@ class MyAccount extends Component {
                     <h2>Shipping Adrresses</h2>
                     </Jumbotron>
                 </Link>
-                <Link to="/admin">
-                    <Jumbotron className="col-xs-12">
-                    <h2>Administration</h2>
-                    </Jumbotron>
-                </Link>               
+                {this.renderAdmin()}            
             </div>
         )
     }

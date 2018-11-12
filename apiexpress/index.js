@@ -145,19 +145,22 @@ app.post('/usertransaction', (req, res) => {
                 JOIN products p
                 ON t.idproduct = p.idproduct
                 WHERE iduser = '${iduser}' 
-                AND status = 'cart';`
+                AND status = 'cart'
+                ORDER BY t.date;`
     var sqlprocess = `SELECT t.*, p.*
                     FROM transaction t
                     JOIN products p
                     ON t.idproduct = p.idproduct
                     WHERE iduser = '${iduser}' 
-                    AND status = 'on process';`
+                    AND status = 'on process'
+                    ORDER BY t.date;`
     var sqldelivered = `SELECT t.*, p.*
                         FROM transaction t
                         JOIN products p
                         ON t.idproduct = p.idproduct
                         WHERE iduser = '${iduser}' 
-                        AND status = 'delivered';`
+                        AND status = 'delivered'
+                        ORDER BY t.date;`
     conn.query(sqlcart, (err, onCart) => {
         if(err) throw err;
         conn.query(sqlprocess, (err, onProcess) => {
@@ -251,5 +254,53 @@ app.get('/admin', (req, res) => {
         })
     })
 })
+
+app.post('/product', (req, res) => {
+    var data = req.body
+    var sql = `INSERT INTO products SET ?`
+    conn.query(sql, data, (err, data) => {
+        if(err) res.send({err, status: 'Error'});
+        else {
+            sql = `SELECT * FROM products;`
+            conn.query(sql, (err, dataProduct) => {
+            if(err) throw err;
+            var data = { productList: dataProduct }
+            res.send(data);            
+            })     
+        }    
+    })
+})
+
+app.delete('/product/:id', (req, res) => {
+    var sql = `DELETE FROM products WHERE idproduct = ` + req.params.id;
+    conn.query(sql, (err, data) => {
+        if(err) res.send({err, status: 'Error'});
+        else{
+            sql = `SELECT * FROM products;`
+            conn.query(sql, (err, dataProduct) => {
+            if(err) throw err;
+            var data = { productList: dataProduct }
+            res.send(data);            
+            })
+        }             
+    })
+})
+
+app.put('/product/:idproduct', (req, res) => {
+    var data = req.body
+    var sql = `UPDATE products SET ? WHERE idproduct = '${req.params.idproduct}';`
+    conn.query(sql, data, (err, data) => {
+        if(err) res.send({err, status: 'Error'});
+        else {
+            sql = `SELECT * FROM products;`
+            conn.query(sql, (err, dataProduct) => {
+            if(err) throw err;
+            var data = { productList: dataProduct }
+            res.send(data);            
+            })     
+        }    
+    })
+})
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`))

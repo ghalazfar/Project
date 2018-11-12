@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { 
     Panel,
-    Button
+    Button,
+    Tabs,
+    Tab
  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -12,54 +14,20 @@ import { API_URL_1 } from '../supports/api-url/apiurl';
 import tshirt from '../supports/img/tshirt.jpg';
 import { getUserTransaction } from '../actions';
 
-class Orders extends Component {
-    updateQuantity = (type, idtransaction, price) => {
-        axios.put(API_URL_1 + '/cartquantity', {
-            type: type,
-            idtransaction: idtransaction,
-            price: price
-        }).then(res => {
-            console.log(res)
-            this.props.getUserTransaction(this.props.auth.iduser)
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
+class Orders extends Component {  
 
-    deleteItem = (idtransaction) => {
-        axios.put(API_URL_1 + '/deletecart', {
-            idtransaction: idtransaction
-        }).then(res => {
-            console.log(res)
-            this.props.getUserTransaction(this.props.auth.iduser)
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
-
-    checkOut = (iduser) => {
-        axios.put(API_URL_1 + '/checkout', {
-            iduser: iduser
-        }).then(res => {
-            console.log(res)
-            this.props.getUserTransaction(this.props.auth.iduser)
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
-
-    renderCartItem = () => {
-        var dataCart = this.props.onCart
-        for (var i in dataCart) {
-            if (dataCart[i].quantity <= 1) {
-                dataCart[i].disabled = true
+    renderOnProcessItem = () => {
+        var dataOnProcess = this.props.onProcess
+        for (var i in dataOnProcess) {
+            if (dataOnProcess[i].quantity <= 1) {
+                dataOnProcess[i].disabled = true
             }
             else {
-                dataCart[i].disabled = false
+                dataOnProcess[i].disabled = false
             }
         }
 
-        return dataCart.map((data) => 
+        return dataOnProcess.map((data) => 
             <div className="col-sm-offset-2 col-sm-8 col-xs-12" style={{ padding: "0" }}>
                 <div style={{ marginTop: "15px", marginBottom: "15px", padding: "0" }} className="col-sm-5 col-xs-11" >
                     <img className="col-xs-4" src={tshirt} style={{ width: "100px"}}/>
@@ -67,36 +35,22 @@ class Orders extends Component {
                     <span className="col-sm-8" style={{ fontSize: "small" }}>Size: <span style={{ fontWeight: "bold" }}>{data.size}</span></span>
                     <span className="col-sm-8" style={{ fontSize: "small" }}>Color: <span style={{ fontWeight: "bold", textTransform: "capitalize" }}>{data.color}</span></span>
                 </div>
-                <div style={{ padding: "0" }} className="hidden-sm hidden-md hidden-lg col-xs-1">
-                    <IconContext.Provider value={{ style: { verticalAlign: 'middle' } }}>
-                        <Button bsSize="xsmall" onClick={() => this.deleteItem(data.idtransaction)}><MdClear/></Button>
-                    </IconContext.Provider>
-                </div>
                 <div style={{ marginTop: "15px", marginBottom: "15px", padding: "0" }} className="col-sm-6 col-xs-12">
                     <p className="hidden-sm hidden-md hidden-lg col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>QTY</p>
-                    <p className="hidden-sm hidden-md hidden-lg col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>AVAILABILITY</p>
-                    <p className="hidden-sm hidden-md hidden-lg col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>PRICE</p>
-                    <p className="hidden-sm hidden-md hidden-lg col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>TOTAL</p>
+                    <p className="hidden-sm hidden-md hidden-lg col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>PAYMENT</p>
+                    <p className="hidden-sm hidden-md hidden-lg col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>DATE</p>
                     <div className="col-sm-3 col-xs-3">
-                        <IconContext.Provider value={{ style: { verticalAlign: 'middle' } }}>
-                            <Button style={{ marginRight: "2px" }} disabled={data.disabled} bsSize="xsmall" onClick={() => this.updateQuantity('remove', data.idtransaction, data.price)}><MdRemove/></Button><span style={{ fontSize: "x-small" }}>{data.quantity}</span><Button style={{ marginLeft: "2px" }} bsSize="xsmall" onClick={() => this.updateQuantity('add', data.idtransaction, data.price)}><MdAdd/></Button>
-                        </IconContext.Provider>
+                            <span style={{ fontSize: "small" }}>{data.quantity}</span>
                     </div>
-                    <p className="col-sm-3 col-xs-3" style={{ fontSize: "x-small", fontWeight: "bold" }}>In Stock</p>                               
-                    <p className="col-sm-3 col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>IDR {data.price}</p>
-                    <p className="col-sm-3 col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>IDR {data.price*data.quantity}</p>
-                </div>
-                <div style={{ padding: "0" }} className="col-sm-1 hidden-xs">
-                    <IconContext.Provider value={{ style: { verticalAlign: 'middle' } }}>
-                        <Button bsSize="xsmall" onClick={() => this.deleteItem(data.idtransaction)}><MdClear/></Button>
-                    </IconContext.Provider>
+                    <p className="col-sm-3 col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>{data.payment}</p>                               
+                    <p className="col-sm-3 col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>{data.date}</p>
                 </div>
             </div>
         )
     }
     
-    renderCart = () => {
-        if (this.props.onCart.length > 0) {
+    renderOnProcess = () => {
+        if (this.props.onProcess.length > 0) {
             return (
                 <div>
                     <div className="col-sm-offset-2 col-sm-8 col-xs-12" style={{ padding: "0" }}>
@@ -105,37 +59,17 @@ class Orders extends Component {
                     </div>
                     <div className="col-sm-6 col-xs-12" style={{ padding: "0" }}>
                         <p className="col-sm-3 hidden-xs" style={{ fontSize: "small", fontWeight: "bold" }}>QTY</p>
-                        <p className="col-sm-3 hidden-xs" style={{ fontSize: "small", fontWeight: "bold" }}>AVAILABILITY</p>
-                        <p className="col-sm-3 hidden-xs" style={{ fontSize: "small", fontWeight: "bold" }}>PRICE</p>
-                        <p className="col-sm-3 hidden-xs" style={{ fontSize: "small", fontWeight: "bold" }}>TOTAL</p>
+                        <p className="col-sm-3 hidden-xs" style={{ fontSize: "small", fontWeight: "bold" }}>PAYMENT</p>
+                        <p className="col-sm-3 hidden-xs" style={{ fontSize: "small", fontWeight: "bold" }}>DATE</p>
                     </div>
                     </div>
-                    {this.renderCartItem()}
+                    {this.renderOnProcessItem()}
                 </div>
             )
         }
         else {
             return (
-                <div>YOUR CART IS EMPTY</div>
-            )
-        }
-    }
-
-    renderCheckout = () => {
-        var totalPayment = 0
-        for (var i in this.props.onCart) {
-            totalPayment += this.props.onCart[i].payment
-        }
-        if (this.props.onCart.length > 0){
-            return (
-                <div className="col-sm-offset-8 col-sm-3 col-xs-12">
-                    <p style={{ fontSize: "small" }}><span className="col-xs-6">Subtotal</span><span className="col-xs-6" style={{ textAlign: "right"}}>IDR {totalPayment}</span></p>                               
-                    <p style={{ fontSize: "small" }}><span className="col-xs-6">Shipping</span><span className="col-xs-6" style={{ textAlign: "right"}}>IDR 50K</span></p>   
-                    <p style={{ fontSize: "small", fontWeight: "bold" }}><span className="col-xs-6">Subtotal</span><span className="col-xs-6" style={{ textAlign: "right"}}>IDR 250K</span></p>   
-                    <Button block style={{ padding: "0px" }} bsStyle="success" bsSize="xsmall" onClick={() => this.checkOut(this.props.auth.iduser)}>
-                        <span style={{ fontWeight: "bold", fontSize: "large" }}>CHECKOUT</span>
-                    </Button>
-                </div>
+                <div>Empty</div>
             )
         }
     }
@@ -152,18 +86,27 @@ class Orders extends Component {
                 </div>    
                 <Panel>
                     <Panel.Body style={{ paddingLeft: "0px", paddingRight: "0px" }}>
-                        {this.renderCart()}
+                    <Tabs defaultActiveKey={1} justified animation={false} >
+                        <Tab eventKey={1} title="On Process">
+                        <Panel style={{ marginTop: "-1px" }}>
+                                <Panel.Body>
+                                    {this.renderOnProcess()}
+                                </Panel.Body>
+                            </Panel>
+                        </Tab>
+                        <Tab eventKey={2} title="Delivered">
+                            Empty
+                        </Tab>
+                    </Tabs>
+                    
                     </Panel.Body>
-                </Panel>
-                <div className="container">
-                    {this.renderCheckout()}
-                </div>              
+                </Panel>           
             </div>
         )
     }    
 }
 
 const mapStateToProps = (state) => {
-    return { auth: state.auth, onCart: state.transaction.onCart}
+    return { auth: state.auth, onProcess: state.transaction.onProcess, delivered: state.transaction.delivered}
 }
 export default connect(mapStateToProps,{ getUserTransaction })(Orders);
