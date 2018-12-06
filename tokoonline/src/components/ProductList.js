@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
 import { categorySelect } from '../actions'
-import tshirt from '../supports/img/tshirt.jpg';
 
 class ProductList extends Component {
     state = {
@@ -50,7 +49,7 @@ class ProductList extends Component {
         if (this.props.productData != undefined) {
             return this.props.productData.map((data) => 
                 <Link to={'/productdetail?id=' + data.idproduct} className="col-sm-3 col-xs-10">
-                    <Thumbnail src={tshirt} alt="">
+                    <Thumbnail src={data.thumbnail} alt="">
                         <p style={{ textAlign: "center" }}>{data.name}</p>
                         <p style={{fontWeight: "bold", textAlign: "center" }}><mark >IDR {(data.price)/1000}K</mark></p>
                     </Thumbnail>

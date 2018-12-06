@@ -8,7 +8,8 @@ import {
     ToggleButton,
     Tooltip,
     Tabs,
-    Tab
+    Tab,
+    Jumbotron
  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
@@ -21,17 +22,18 @@ import loadinggif from '../supports/img/loading.gif';
 
 class ProductDetail extends Component {
     state = {
-        productData: [''],
+        productData: [],
         selectedSize: '',
         selectedColor: '',
         quantity: 1,
-        addToCartPressed: false
+        addToCartPressed: false,
+        selectedThumbnail: ''
     }
     componentWillMount() {
         const params = queryString.parse(this.props.location.search)
         axios.get(API_URL_1 +'/productdetail?id='+ params.id
         ).then(res => {
-        this.setState({ productData: res.data })
+        this.setState({ productData: res.data.detail, images: res.data.images, selectedThumbnail: res.data.images[0].image1 })
         })
     }
 
@@ -150,15 +152,15 @@ class ProductDetail extends Component {
     }
 
     render() {
-        if (this.state.productData[0] !== '') {
+        if (this.state.productData.length > 0) {
             return(
                 <div className="container">
                     <div className="col-sm-offset-1 col-sm-5 col-xs-12">
-                        <Thumbnail src={tshirt} alt=""/>
-                        <Thumbnail src={tshirt} alt="" className="col-xs-3"/>
-                        <Thumbnail src={tshirt} alt="" className="col-xs-3"/>
-                        <Thumbnail src={tshirt} alt="" className="col-xs-3"/>
-                        <Thumbnail src={tshirt} alt="" className="col-xs-3"/>
+                        <Thumbnail href="#" src={this.state.selectedThumbnail} alt=""/>
+                        <Thumbnail href="#" src={this.state.images[0].image1} alt="" className="col-xs-3" onClick={() => this.setState({selectedThumbnail: this.state.images[0].image1})}/>
+                        <Thumbnail href="#" src={this.state.images[0].image2} alt="" className="col-xs-3" onClick={() => this.setState({selectedThumbnail: this.state.images[0].image2})}/>
+                        <Thumbnail href="#" src={this.state.images[0].image3} alt="" className="col-xs-3" onClick={() => this.setState({selectedThumbnail: this.state.images[0].image3})}/>
+                        <Thumbnail href="#" src={this.state.images[0].image4} alt="" className="col-xs-3" onClick={() => this.setState({selectedThumbnail: this.state.images[0].image4})}/>
                     </div>
                     <div className="col-sm-5 col-xs-12">
                         <h4 style={{ fontWeight: "bold" }}>{this.state.productData[0].name}</h4>
@@ -218,11 +220,11 @@ class ProductDetail extends Component {
             )
         }
         return (
-            <div className="App" style={{ display: "table", position: "absolute", width: "100%", height: "100%", left: "0", top: "0", backgroundColor: "white", overflowX: "hidden" }}>
-                <div style={{ display: "table-cell", verticalAlign: "middle" }}>
-                <img className="center" style={{ width: "150px" }} src={loadinggif}/>
-                </div>        
-          </div>
+            <div className="container">
+                <Jumbotron className="col-xs-12">
+                <h2>Sorry, this item is out of stock!</h2>
+                </Jumbotron>        
+            </div>
         )
     }    
 }

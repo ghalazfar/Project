@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 
 const conn = mysql.createConnection({
     host: 'localhost',
-    user: 'ghalazfar',
+    user: 'root',
     password: 'kronos12',
     database: 'ecommerce',
     port: 3306
@@ -21,6 +21,14 @@ const conn = mysql.createConnection({
 
 app.get('/', (req, res) => {
     res.send('<h1>API Project!</h1>')
+})
+
+app.get('/home', (req, res) => {
+    var sql = `SELECT * FROM carousel`
+    conn.query(sql, (err, data) => {
+        if(err) throw err;
+        res.send(data)
+    })    
 })
 
 app.get('/productlist', (req, res) => {
@@ -75,14 +83,20 @@ app.get('/search', (req, res) => {
 
 app.get('/productdetail', (req, res) => {
     const { id } = req.query
-    sql = `SELECT p.*, s.size, s.color, s.supply
+    var sql = `SELECT p.*, s.size, s.color, s.supply
                 FROM products p
                 JOIN productsupply s
                 WHERE p.idproduct = ${id}
                 AND s.idproduct = ${id};`             
-    conn.query(sql, (err, data) => {
+    conn.query(sql, (err, detail) => {
         if(err) console.log(err);
-        res.send(data)
+        sqlimage = `SELECT * 
+                FROM productimages
+                WHERE idproduct = ${id};`
+        conn.query(sqlimage, (err, images) => {
+            if(err) console.log(err)
+            res.send({ detail, images })
+        })
     })
 })
 
@@ -242,32 +256,93 @@ app.get('/admin', (req, res) => {
     var sqlproduct = `SELECT * FROM products;`               
     var sqluser = `SELECT * FROM users;`
     var sqltransaction = `SELECT * FROM transaction;`
+    var topidproduct = `SELECT MAX(idproduct) as top FROM products`
     conn.query(sqlproduct, (err, dataproduct) => {
         if(err) throw err;
         conn.query(sqluser, (err, datauser) => {
             if(err) throw err;
             conn.query(sqltransaction, (err, datatransaction) => {
                 if(err) throw err;
-            var data = { productList: dataproduct, userList: datauser, transactionList: datatransaction}
-            res.send(data);     
-            })       
+                conn.query(topidproduct, (err, topidproduct) => {
+                    if(err) throw err;
+                    var data = { productList: dataproduct, userList: datauser, transactionList: datatransaction, topidproduct: topidproduct}
+                    res.send(data);     
+                })  
+            })             
         })
     })
 })
 
+app.post('/adminproductdetails', (req, res) => {
+    const { id } = req.body
+    var sql = `SELECT *
+                FROM productimages
+                WHERE idproduct = ${id};`             
+    conn.query(sql, (err, images) => {
+        if(err) console.log(err);
+        sql = `SELECT idcatgroup, idcatdetail
+                FROM productcategory
+                WHERE idproduct = ${id};`  
+        conn.query(sql, (err, category) => {
+            if(err) console.log(err);
+            res.send({ images, category })       
+        })     
+    })
+})
+
 app.post('/product', (req, res) => {
-    var data = req.body
+    const { 
+        idproduct,
+        name,
+        price,
+        description,
+        thumbnail,
+        discount,
+        idcatgroup,
+        idcatdetail,
+        image1,
+        image2,
+        image3,
+        image4
+    } = req.body
+    const productdata = {
+        name,
+        price,
+        description,
+        thumbnail,
+        discount,
+    }
+    const catdata = {
+        idproduct, 
+        idcatgroup,
+        idcatdetail
+    }
+    const imagedata = { 
+        idproduct, 
+        image1,
+        image2,
+        image3,
+        image4
+    }
     var sql = `INSERT INTO products SET ?`
-    conn.query(sql, data, (err, data) => {
-        if(err) res.send({err, status: 'Error'});
-        else {
-            sql = `SELECT * FROM products;`
-            conn.query(sql, (err, dataProduct) => {
+    conn.query(sql, productdata, (err, data) => {
+        if(err) throw err;
+        sql = `INSERT INTO productcategory SET ?`
+        conn.query(sql, catdata, (err, data) => {
             if(err) throw err;
-            var data = { productList: dataProduct }
-            res.send(data);            
-            })     
-        }    
+            sql = `INSERT INTO productimages SET ?`
+            conn.query(sql, imagedata, (err, data) => {
+                if(err) throw err;
+                else {
+                    sql = `SELECT * FROM products;`
+                    conn.query(sql, (err, dataProduct) => {
+                        if(err) throw err;
+                        var data = { productList: dataProduct }
+                        res.send(data);            
+                    })     
+                } 
+            })
+        })           
     })
 })
 
@@ -287,18 +362,52 @@ app.delete('/product/:id', (req, res) => {
 })
 
 app.put('/product/:idproduct', (req, res) => {
-    var data = req.body
+    const { name,
+        price,
+        description,
+        thumbnail,
+        discount,
+        idcatgroup,
+        idcatdetail,
+        image1,
+        image2,
+        image3,
+        image4
+    } = req.body
+    const productdata = {
+        name,
+        price,
+        description,
+        thumbnail,
+        discount,
+    }
+    const catdata = { 
+        idcatgroup,
+        idcatdetail
+    }
+    const imagedata = { 
+        image1,
+        image2,
+        image3,
+        image4
+    }
     var sql = `UPDATE products SET ? WHERE idproduct = '${req.params.idproduct}';`
-    conn.query(sql, data, (err, data) => {
-        if(err) res.send({err, status: 'Error'});
-        else {
-            sql = `SELECT * FROM products;`
-            conn.query(sql, (err, dataProduct) => {
+    conn.query(sql, productdata, (err, data) => {
+        if(err) throw err;
+        sql = `UPDATE productcategory SET ? WHERE idproduct = '${req.params.idproduct}';`
+        conn.query(sql, catdata, (err, data) => {
             if(err) throw err;
-            var data = { productList: dataProduct }
-            res.send(data);            
-            })     
-        }    
+            sql = `UPDATE productimages SET ? WHERE idproduct = '${req.params.idproduct}';`
+            conn.query(sql, imagedata, (err, data) => {
+                if(err) throw err;
+                sql = `SELECT * FROM products;`
+                conn.query(sql, (err, dataProduct) => {
+                    if(err) throw err;
+                    var data = { productList: dataProduct }
+                    res.send(data);            
+                })     
+            })
+        })           
     })
 })
 

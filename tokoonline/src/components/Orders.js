@@ -30,7 +30,7 @@ class Orders extends Component {
         return dataOnProcess.map((data) => 
             <div className="col-sm-offset-2 col-sm-8 col-xs-12" style={{ padding: "0" }}>
                 <div style={{ marginTop: "15px", marginBottom: "15px", padding: "0" }} className="col-sm-5 col-xs-11" >
-                    <img className="col-xs-4" src={tshirt} style={{ width: "100px"}}/>
+                    <Link to={"/productdetail?id="+data.idproduct}><img className="col-xs-4" src={data.thumbnail} style={{ width: "100px"}}/></Link>
                     <span className="col-sm-8" style={{ fontSize: "small", fontWeight: "bold" }}>{data.name}</span>
                     <span className="col-sm-8" style={{ fontSize: "small" }}>Size: <span style={{ fontWeight: "bold" }}>{data.size}</span></span>
                     <span className="col-sm-8" style={{ fontSize: "small" }}>Color: <span style={{ fontWeight: "bold", textTransform: "capitalize" }}>{data.color}</span></span>
@@ -43,7 +43,7 @@ class Orders extends Component {
                             <span style={{ fontSize: "small" }}>{data.quantity}</span>
                     </div>
                     <p className="col-sm-3 col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>{data.payment}</p>                               
-                    <p className="col-sm-3 col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>{data.date}</p>
+                    <p className="col-sm-3 col-xs-3" style={{ fontSize: "small", fontWeight: "bold" }}>{data.date.replace('T', ' ').replace('.000Z', '')}</p>
                 </div>
             </div>
         )
